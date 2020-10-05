@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/custom_gradient"
+    android:id="@+id/drawer_layout"
+    android:fitsSystemWindows="true"
+    tools:context=".OptionActivity">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar">
+
+        </include>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TableRow
+                android:layout_marginBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/opt_name"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:padding="5dp"
+                    android:background="@drawable/custom_field"
+                    android:textColorHint="@color/Silver"
+                    android:textColor="@color/White"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:importantForAutofill="no"
+                    android:hint="@string/op_name" />
+
+                <EditText
+                    android:id="@+id/opt_surname"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:padding="5dp"
+                    android:background="@drawable/custom_field"
+                    android:textColorHint="@color/Silver"
+                    android:textColor="@color/White"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:importantForAutofill="no"
+                    android:hint="@string/op_surname" />
+
+
+            </TableRow>
+
+            <TableRow
+                android:layout_marginBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/opt_login"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:background="@drawable/custom_field"
+                    android:textColorHint="@color/Silver"
+                    android:textColor="@color/White"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textPersonName"
+                    android:importantForAutofill="no"
+                    tools:ignore="LabelFor" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_marginBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/opt_email"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:background="@drawable/custom_field"
+                    android:textColorHint="@color/Silver"
+                    android:textColor="@color/White"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textEmailAddress"
+                    android:importantForAutofill="no"
+                    tools:ignore="LabelFor" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_marginBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="200dp"
+                tools:ignore="RtlSymmetry">
+
+                <Button
+                    android:id="@+id/op_edit_btn"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/custom_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/op_edit_btn"
+                    tools:ignore="ButtonStyle" />
+
+                <Button
+                    android:id="@+id/op_save_btn"
+                    android:layout_weight="1"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/custom_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/op_save_btn"
+                    tools:ignore="ButtonStyle" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_marginBottom="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/op_photo_btn"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/custom_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/op_photo_btn"
+                    tools:ignore="ButtonStyle" />
+
+            </TableRow>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/drawer_menu"
+        app:headerLayout="@layout/header_layout"
+        android:id="@+id/navigation_view"/>
+
+
+</androidx.drawerlayout.widget.DrawerLayout>

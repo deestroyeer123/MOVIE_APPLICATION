@@ -1,0 +1,305 @@
+<resources>
+    <string name="app_name">Movie Application</string>
+    <string name="home_title">Strona domowa</string>
+    <string name="settings_title">Ustawienia</string>
+    <string name="register_title">Rejestracja</string>
+    <string name="profile_title">Profil</string>
+    <string name="login_title">Logowanie</string>
+    <string name="log_login">Login</string>
+    <string name="log_password">Hasło</string>
+    <string name="log_email">E-mail</string>
+    <string name="log_password_confirm">Powtórz hasło</string>
+    <string name="log_btn">Zaloguj</string>
+    <string name="register_btn">Zarejerstruj</string>
+    <string name="menu_settings">Ustawienia</string>
+    <string name="menu_registration">Zarejestruj</string>
+    <string name="header_title">Siema</string>
+    <string name="log_in">Logowanie</string>
+    <string name="logout">Wyloguj</string>
+    <string name="login">Zaloguj</string>
+    <string name="op_edit_btn">Edytuj</string>
+    <string name="op_save_btn">Zapisz</string>
+    <string name="op_photo_btn">Zmień zdjęcie</string>
+    <string name="op_name">Imię</string>
+    <string name="op_surname">Nazwisko</string>
+    <string name="not_registered">Nie masz jeszcze konta?</string>
+    <string name="register">Zarejestruj się</string>
+    <string name="profile_name">Imię</string>
+    <string name="profile_age">Wiek</string>
+    <string name="profile_man">Mężczyzna</string>
+    <string name="profile_woman">Kobieta</string>
+    <string name="profile_comedy">Komedia</string>
+    <string name="profile_action_film">Film akcji</string>
+    <string name="profile_drama_film">Dramat</string>
+    <string name="profile_fantasy">Fantasy</string>
+    <string name="profile_horror">Horror</string>
+    <string name="profile_disaster_film">Katastroficzny</string>
+    <string name="profile_scifi">Science fiction</string>
+    <string name="profile_adventure_film">Przygodowy</string>
+    <string name="profile_thriller">Thriller</string>
+    <string name="profile_western">Western</string>
+    <string name="profile_war_film">Wojenny</string>
+    <string name="profile_romantic">Romantyczny</string>
+    <string name="profile_documentary">Dokumentalny</string>
+    <string name="profile_animated_film">Animowany</string>
+    <string name="profile_biographical_film">Biograficzny</string>
+    <string name="profile_music">Muzyka</string>
+    <string name="profile_acting">Gra aktorska</string>
+    <string name="profile_actors">Aktorzy</string>
+    <string name="profile_plot">Fabuła</string>
+    <string name="profile_scenography">Scenografia</string>
+    <string name="profile_director">Reżyser</string>
+    <string name="profile_title_important">Na co zwracasz uwagę w filmie? (wybierz 3)</string>
+    <string name="profile_title_place">Gdzie lubisz oglądać filmy?</string>
+    <string name="profile_title_type">Jakie rodzaje filmów preferujesz? (wybierz 3)</string>
+    <string name="profile_title_sex">Wybierz płeć</string>
+    <string name="profile_title_details">Podaj imię oraz wiek</string>
+    <string name="profile_home">W domu</string>
+    <string name="profile_cinema">W kinie</string>
+    <string name="profile_outside">Na zewnątrz</string>
+    <string name="profile_title_country">Kraj produkcji filmów (wybierz 3)</string>
+    <string name="profile_title_actors">Wybierz ulubionych aktorów (wybierz 3)</string>
+    <string name="profile_title_directors">Wybierz ulubionych reżyserów (wybierz 3)</string>
+    <string name="profile_title_oscars">Czy wybierasz tylko filmy oscarowe?</string>
+    <string name="profile_title_years">Rok produkcji filmów (wybierz 3)</string>
+    <string name="profile_title_food">Co lubisz jeść do filmu? (wybierz 3 )</string>
+    <string name="profile_title_group">Jaka grupa odpowiada ci bardziej do oglądania?</string>
+    <string name="profile_argentina">Argentyna</string>
+    <string name="profile_australia">Australia</string>
+    <string name="profile_belgium">Belgia</string>
+    <string name="profile_france">Francja</string>
+    <string name="profile_greece">Grecja</string>
+    <string name="profile_spain">Hiszpania</string>
+    <string name="profile_india">Indie</string>
+    <string name="profile_japan">Japonia</string>
+    <string name="profile_canada">Kanada</string>
+    <string name="profile_mexico">Meksyk</string>
+    <string name="profile_germany">Niemcy</string>
+    <string name="profile_poland">Polska</string>
+    <string name="profile_usa">USA</string>
+    <string name="profile_uk">Wielka Brytania</string>
+    <string name="profile_italy">Włochy</string>
+    <string name="profile_oscars_true">Tak</string>
+    <string name="profile_oscars_false">Nie</string>
+    <string name="profile_less_than_1990">Starsze niż 1990</string>
+    <string name="profile_1990_2000">1990–2000</string>
+    <string name="profile_2000_2010">2000–2010</string>
+    <string name="profile_2010_2015">2010–2015</string>
+    <string name="profile_2015_2019">2015–2019</string>
+    <string name="profile_more_than_2019">Z ostatniego roku</string>
+    <string name="profile_popcorn">Popcorn</string>
+    <string name="profile_nachos">Nachosy</string>
+    <string name="profile_chips">Chipsy</string>
+    <string name="profile_salty_sticks">Paluszki/precelki</string>
+    <string name="profile_cookies">Ciastka</string>
+    <string name="profile_food_nothing">Nic</string>
+    <string name="profile_group_more">Duża</string>
+    <string name="profile_group_less">Mała</string>
+    <string name="profile_save_btn">Zapisz</string>
+    <string name="profile_spin_actors">Aktorzy</string>
+    <string name="profile_spin_directors">Reżyserzy</string>
+
+    <string-array name="Directors">
+        <item>Quentin Tarantino</item>
+        <item>Stanley Kubrick</item>
+        <item>Sergio Leone</item>
+        <item>Francis Ford Coppola</item>
+        <item>David Fincher</item>
+        <item>Wes Anderson</item>
+        <item>Christopher Nolan</item>
+        <item>Miloš Forman</item>
+        <item>Andriej Tarkowski</item>
+        <item>Martin Scorsese</item>
+        <item>Frank Darabont</item>
+        <item>David Lynch</item>
+        <item>Paolo Sorrentino</item>
+        <item>Mel Gibson</item>
+        <item>Ingmar Bergman</item>
+        <item>James Cameron</item>
+        <item>Joon-ho Bong</item>
+        <item>Alfred Hitchcock</item>
+        <item>Alejandro González Iñárritu</item>
+        <item>Peter Jackson</item>
+        <item>Xavier Dolan</item>
+        <item>Stanisław Bareja</item>
+        <item>Akira Kurosawa</item>
+        <item>Damien Chazelle</item>
+        <item>Denis Villeneuve</item>
+        <item>Giuseppe Tornatore</item>
+        <item>Sidney Lumet</item>
+        <item>Wojciech Smarzowski</item>
+        <item>Krzysztof Kieślowski</item>
+        <item>Federico Fellini</item>
+        <item>Roman Polański</item>
+        <item>Joanna Wizmur</item>
+        <item>Charlie Chaplin</item>
+        <item>Chan-wook Park</item>
+        <item>Hayao Miyazaki</item>
+        <item>Paul Thomas Anderson</item>
+        <item>Clint Eastwood</item>
+        <item>Tim Burton</item>
+        <item>Billy Wilder</item>
+        <item>Jonathan Demme</item>
+        <item>Taika Waititi</item>
+        <item>Michael Haneke</item>
+        <item>Anthony Russo</item>
+        <item>Robert Zemeckis</item>
+        <item>Joe Russo</item>
+        <item>Steven Spielberg</item>
+        <item>Sam Mendes</item>
+        <item>Pedro Almodóvar</item>
+        <item>Jim Jarmusch</item>
+        <item>Guy Ritchie</item>
+        <item>Alfonso Cuarón</item>
+        <item>Edgar Wright</item>
+        <item>Darren Aronofsky</item>
+        <item>Terry Gilliam</item>
+        <item>Peter Weir</item>
+        <item>Jorgos Lantimos</item>
+        <item>Joel Coen</item>
+        <item>Tomasz Bagiński</item>
+        <item>Michael Mann</item>
+        <item>Luis Buñuel</item>
+        <item>Brian De Palma</item>
+        <item>Alan Parker</item>
+        <item>Ridley Scott</item>
+        <item>John McTiernan</item>
+        <item>Gore Verbinski</item>
+        <item>George Miller</item>
+        <item>Mike Nichols</item>
+        <item>Stephen Daldry</item>
+        <item>Jean-Marc Vallée</item>
+        <item>Nicolas Winding Refn</item>
+        <item>James Wan</item>
+        <item>Lana Wachowski</item>
+        <item>Richard Linklater</item>
+        <item>Matthew Vaughn</item>
+        <item>Ethan Coen</item>
+        <item>Neill Blomkamp</item>
+        <item>Marek Koterski</item>
+        <item>Tom McCarthy</item>
+        <item>Juliusz Machulski</item>
+        <item>John Carpenter</item>
+        <item>Todd Phillips</item>
+        <item>Oliver Stone</item>
+        <item>Lars von Trier</item>
+        <item>Richard Donner</item>
+        <item>Danny Boyle</item>
+        <item>Lilly Wachowski</item>
+        <item>Tony Scott</item>
+        <item>Joe Wright</item>
+        <item>Adam McKay</item>
+        <item>Brad Bird</item>
+        <item>Sofia Coppola</item>
+        <item>Ang Lee</item>
+        <item>Rob Reiner</item>
+        <item>David Cronenberg</item>
+        <item>Lasse Hallström</item>
+        <item>Sydney Pollack</item>
+        <item>Andrzej Wajda</item>
+        <item>Ron Howard</item>
+        <item>Paul Verhoeven</item>
+    </string-array>
+
+    <string-array name="Actors">
+        <item>Robert De Niro</item>
+        <item>Al Pacino</item>
+        <item>Kevin Spacey</item>
+        <item>Jack Nicholson</item>
+        <item>Sean Connery</item>
+        <item>Harrison Ford</item>
+        <item>Samuel L. Jackson</item>
+        <item>Morgan Freeman</item>
+        <item>Clint Eastwood</item>
+        <item>Tom Hanks</item>
+        <item>James Stewart</item>
+        <item>Alec Guinness</item>
+        <item>Nicolas Cage</item>
+        <item>Anthony Hopkins</item>
+        <item>Michael Caine</item>
+        <item>Steve Buscemi</item>
+        <item>Steve McQueen</item>
+        <item>Cary Grant</item>
+        <item>Marlon Brando</item>
+        <item>Johnny Depp</item>
+        <item>Christopher Lee</item>
+        <item>Humphrey Bogart</item>
+        <item>Jodie Foster</item>
+        <item>Brad Pitt</item>
+        <item>Audrey Hepburn</item>
+        <item>Bruce Willis</item>
+        <item>Gary Oldman</item>
+        <item>Christopher Walken</item>
+        <item>Mel Gibson</item>
+        <item>Russell Crowe</item>
+        <item>Dustin Hoffman</item>
+        <item>Ewan McGregor</item>
+        <item>Jack Lemmon</item>
+        <item>Peter Sellers</item>
+        <item>John Travolta</item>
+        <item>Edward Norton</item>
+        <item>Gene Hackman</item>
+        <item>Julia Roberts</item>
+        <item>Jim Carrey</item>
+        <item>Bruce Lee</item>
+        <item>Harvey Keitel</item>
+        <item>John Cusack</item>
+        <item>Marilyn Monroe</item>
+        <item>Jean Reno</item>
+        <item>Arnold Schwarzenegger</item>
+        <item>Richard Burton</item>
+        <item>Paul Newman</item>
+        <item>Bettie Davis</item>
+        <item>Tom Cruise</item>
+        <item>Sigourney Weaver</item>
+        <item>Katharine Hepburn</item>
+        <item>Mike Myers</item>
+        <item>John Malkovich</item>
+        <item>John Cleese</item>
+        <item>Laurence Olivier</item>
+        <item>Jackie Chan</item>
+        <item>Denzel Washington</item>
+        <item>Nicole Kidman</item>
+        <item>Woody Allen</item>
+        <item>Ingrid Bergman</item>
+        <item>Eddie Murphy</item>
+        <item>John Wayne</item>
+        <item>Tim Robbins</item>
+        <item>Cameron Diaz</item>
+        <item>Whoopi Goldberg</item>
+        <item>Keanu Reeves</item>
+        <item>Bill Murray</item>
+        <item>Charlie Chaplin</item>
+        <item>Judy Garland</item>
+        <item>Benicio Del Toro</item>
+        <item>Meryl Streep</item>
+        <item>Meg Ryan</item>
+        <item>Kathy Bates</item>
+        <item>James Cagney</item>
+        <item>Angelina Jolie</item>
+        <item>Lauren Bacall</item>
+        <item>Danny DeVito</item>
+        <item>Sylvester Stallone</item>
+        <item>Robert Redford</item>
+        <item>Chow Yun-Fat</item>
+        <item>Kirk Douglas</item>
+        <item>Gerad Depardieu</item>
+        <item>Dennis Hopper</item>
+        <item>Michelle Pfeiffer</item>
+        <item>Clark Gable</item>
+        <item>Robert Downey Jr.</item>
+        <item>Susan Sarandon</item>
+        <item>Fred Astaire</item>
+        <item>Christina Ricci</item>
+        <item>Winona Ryder</item>
+        <item>James Woods</item>
+        <item>Cate Blanchett</item>
+        <item>Donald Sutherland</item>
+        <item>Ben Affleck</item>
+        <item>Juliette Binoche</item>
+        <item>Grace Kelly</item>
+        <item>David Niven</item>
+        <item>Elizabeth Taylro</item>
+        <item>Ralph Fiennes</item>
+    </string-array>
+</resources>

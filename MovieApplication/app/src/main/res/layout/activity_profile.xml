@@ -1,0 +1,1054 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/custom_gradient"
+    android:id="@+id/drawer_layout"
+    android:fitsSystemWindows="true"
+    tools:context=".ProfileActivity">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/app_bar"
+            layout="@layout/app_bar">
+
+        </include>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_details"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_details" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/profile_name"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp"
+                        android:padding="5dp"
+                        android:background="@drawable/custom_field"
+                        android:textColorHint="@color/Silver"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:inputType="textPersonName"
+                        android:importantForAutofill="no"
+                        android:hint="@string/profile_name" />
+
+                    <EditText
+                        android:id="@+id/profile_age"
+                        android:layout_weight="2"
+                        android:layout_marginStart="5dp"
+                        android:padding="5dp"
+                        android:background="@drawable/custom_field"
+                        android:textColorHint="@color/Silver"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:inputType="number"
+                        android:importantForAutofill="no"
+                        android:hint="@string/profile_age" />
+
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_sex"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_sex" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioGroup
+                        android:id="@+id/radio_group_sex"
+                        android:orientation="horizontal"
+                        tools:ignore="UselessParent">
+
+                        <RadioButton
+                            android:id="@+id/profile_man"
+                            android:layout_weight="1"
+                            android:textColor="@color/White"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_man" />
+
+                        <RadioButton
+                            android:id="@+id/profile_woman"
+                            android:layout_weight="1"
+                            android:textColor="@color/White"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_woman" />
+
+
+                    </RadioGroup>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_type"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_type" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_action_film"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_action_film" />
+
+                    <CheckBox
+                        android:id="@+id/profile_comedy"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_comedy" />
+
+                    <CheckBox
+                        android:id="@+id/profile_drama_film"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_drama_film" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_fantasy"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_fantasy" />
+
+                    <CheckBox
+                        android:id="@+id/profile_horror"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_horror" />
+
+                    <CheckBox
+                        android:id="@+id/profile_disaster_film"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_disaster_film" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_adventure_film"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_adventure_film" />
+
+                    <CheckBox
+                        android:id="@+id/profile_scifi"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_scifi" />
+
+                    <CheckBox
+                        android:id="@+id/profile_thriller"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_thriller" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_western"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_western" />
+
+                    <CheckBox
+                        android:id="@+id/profile_war_film"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_war_film" />
+
+                    <CheckBox
+                        android:id="@+id/profile_romantic"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_romantic" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_animated_film"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_animated_film" />
+
+                    <CheckBox
+                        android:id="@+id/profile_biographical_film"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_biographical_film" />
+
+                    <CheckBox
+                        android:id="@+id/profile_documentary"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_documentary" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_important"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_important" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_music"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_music" />
+
+                    <CheckBox
+                        android:id="@+id/profile_acting"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_acting" />
+
+                    <CheckBox
+                        android:id="@+id/profile_scenography"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_scenography" />
+
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_actors"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_actors" />
+
+                    <CheckBox
+                        android:id="@+id/profile_director"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_director" />
+
+                    <CheckBox
+                        android:id="@+id/profile_plot"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_plot" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_place"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_place" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioGroup
+                        android:id="@+id/radio_group_place"
+                        android:orientation="horizontal"
+                        tools:ignore="UselessParent">
+
+                        <RadioButton
+                            android:id="@+id/profile_home"
+                            android:layout_weight="1"
+                            android:textColor="@color/White"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_home" />
+
+                        <RadioButton
+                            android:id="@+id/profile_cinema"
+                            android:layout_weight="1"
+                            android:textColor="@color/White"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_cinema" />
+
+                        <RadioButton
+                            android:id="@+id/profile_outside"
+                            android:layout_weight="1"
+                            android:textColor="@color/White"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_outside" />
+
+                    </RadioGroup>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_country"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_country" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_argentina"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_argentina" />
+
+                    <CheckBox
+                        android:id="@+id/profile_australia"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_australia" />
+
+                    <CheckBox
+                        android:id="@+id/profile_belgium"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_belgium" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_france"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_france" />
+
+                    <CheckBox
+                        android:id="@+id/profile_greece"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_greece" />
+
+                    <CheckBox
+                        android:id="@+id/profile_spain"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_spain" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_india"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_india" />
+
+                    <CheckBox
+                        android:id="@+id/profile_japan"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_japan" />
+
+                    <CheckBox
+                        android:id="@+id/profile_canada"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_canada" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_mexico"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_mexico" />
+
+                    <CheckBox
+                        android:id="@+id/profile_germany"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_germany" />
+
+                    <CheckBox
+                        android:id="@+id/profile_poland"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_poland" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_usa"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_usa"
+                        tools:ignore="TooManyViews" />
+
+                    <CheckBox
+                        android:id="@+id/profile_uk"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_uk" />
+
+                    <CheckBox
+                        android:id="@+id/profile_italy"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_italy" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_actors"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_actors" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Spinner
+                        android:id="@+id/profile_spin_actors"
+                        android:entries="@array/Actors"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/spinner_background"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                    <Spinner
+                        android:id="@+id/profile_spin_actors2"
+                        android:entries="@array/Actors"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/spinner_background"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                    <Spinner
+                        android:id="@+id/profile_spin_actors3"
+                        android:entries="@array/Actors"
+                        android:layout_marginStart="5dp"
+                        android:background="@drawable/spinner_background"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_directors"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_directors" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Spinner
+                        android:id="@+id/profile_spin_directors"
+                        android:entries="@array/Directors"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/spinner_background"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                    <Spinner
+                        android:id="@+id/profile_spin_directors2"
+                        android:entries="@array/Directors"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/spinner_background"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                    <Spinner
+                        android:id="@+id/profile_spin_directors3"
+                        android:entries="@array/Directors"
+                        android:layout_marginStart="5dp"
+                        android:background="@drawable/spinner_background"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_oscars"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_oscars" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioGroup
+                        android:id="@+id/radio_group_oscars"
+                        android:orientation="horizontal"
+                        tools:ignore="UselessParent">
+
+                        <RadioButton
+                            android:id="@+id/profile_oscars_true"
+                            android:layout_weight="1"
+                            android:textColor="@color/White"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_oscars_true" />
+
+                        <RadioButton
+                            android:id="@+id/profile_oscars_false"
+                            android:layout_weight="1"
+                            android:textColor="@color/White"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_oscars_false" />
+
+
+                    </RadioGroup>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_years"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_years" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_less_than_1990"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@null"
+                        android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                        android:text="@string/profile_less_than_1990" />
+
+                    <CheckBox
+                        android:id="@+id/profile_1990_2000"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@null"
+                        android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                        android:text="@string/profile_1990_2000" />
+
+                    <CheckBox
+                        android:id="@+id/profile_2000_2010"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@null"
+                        android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                        android:text="@string/profile_2000_2010" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_2010_2015"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@null"
+                        android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                        android:text="@string/profile_2010_2015" />
+
+                    <CheckBox
+                        android:id="@+id/profile_2015_2019"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@null"
+                        android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                        android:text="@string/profile_2015_2019" />
+
+                    <CheckBox
+                        android:id="@+id/profile_more_than_2019"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@null"
+                        android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                        android:text="@string/profile_more_than_2019" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_food"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_food" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_popcorn"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_popcorn" />
+
+                    <CheckBox
+                        android:id="@+id/profile_nachos"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_nachos" />
+
+                    <CheckBox
+                        android:id="@+id/profile_chips"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_chips" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <CheckBox
+                        android:id="@+id/profile_salty_sticks"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_salty_sticks" />
+
+                    <CheckBox
+                        android:id="@+id/profile_cookies"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_cookies" />
+
+                    <CheckBox
+                        android:id="@+id/profile_food_nothing"
+                        android:layout_weight="1"
+                        android:textColor="@color/White"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_food_nothing" />
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/profile_title_group"
+                        android:textColor="@color/White"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="@string/profile_title_group" />
+
+                </TableRow>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/Black"
+                    android:layout_marginBottom="15dp"/>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioGroup
+                        android:id="@+id/radio_group_groups"
+                        android:orientation="horizontal"
+                        tools:ignore="UselessParent">
+
+                        <RadioButton
+                            android:id="@+id/profile_group_more"
+                            android:layout_weight="1"
+                            android:textColor="@color/White"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_group_more" />
+
+                        <RadioButton
+                            android:id="@+id/profile_group_less"
+                            android:layout_weight="1"
+                            android:textColor="@color/White"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/profile_group_less" />
+
+
+                    </RadioGroup>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginBottom="30dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/profile_save_btn"
+                        android:background="@drawable/custom_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/profile_save_btn" />
+
+                </TableRow>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/drawer_menu"
+        app:headerLayout="@layout/header_layout"
+        android:id="@+id/navigation_view"/>
+
+
+</androidx.drawerlayout.widget.DrawerLayout>
