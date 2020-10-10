@@ -96,6 +96,7 @@
     <string name="profile_group_more">Duża</string>
     <string name="profile_group_less">Mała</string>
     <string name="profile_save_btn">Zapisz</string>
+    <string name="profile_edit_btn">Edytuj</string>
     <string name="profile_spin_actors">Aktorzy</string>
     <string name="profile_spin_directors">Reżyserzy</string>
 

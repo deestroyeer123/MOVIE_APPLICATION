@@ -71,15 +71,14 @@ public class ProfileActivity extends AppCompatActivity {
     germany, poland, usa, uk, italy;
     CheckBox r1990, r2000, r2010, r2015, r2019, r2020;
     CheckBox popcorn, nachos, chips, sticks, cookies, nothing;
-    Button save;
+    Button save, edit;
+
+    //String userID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        //new ParseTask().execute();
-        //update_profile();
-        create_profile();
 
         toolbar = findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.profile_title);
@@ -93,86 +92,7 @@ public class ProfileActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_view);
-
-        title_countries = findViewById(R.id.profile_title_country);
-        title_elements = findViewById(R.id.profile_title_important);
-        title_foods = findViewById(R.id.profile_title_food);
-        title_movies = findViewById(R.id.profile_title_type);
-        title_years = findViewById(R.id.profile_title_years);
-        sex = findViewById(R.id.radio_group_sex);
-        place = findViewById(R.id.radio_group_place);
-        oscar = findViewById(R.id.radio_group_oscars);
-        group = findViewById(R.id.radio_group_groups);
-        save = findViewById(R.id.profile_save_btn);
-        spin_directors = findViewById(R.id.profile_spin_directors);
-        spin_directors2 = findViewById(R.id.profile_spin_directors2);
-        spin_directors3 = findViewById(R.id.profile_spin_directors3);
-        spin_actors = findViewById(R.id.profile_spin_actors);
-        spin_actors2 = findViewById(R.id.profile_spin_actors2);
-        spin_actors3 = findViewById(R.id.profile_spin_actors3);
-        pr_name = findViewById(R.id.profile_name);
-        pr_age = findViewById(R.id.profile_age);
-        man = findViewById(R.id.profile_man);
-        woman = findViewById(R.id.profile_woman);
-        oscars_true = findViewById(R.id.profile_oscars_true);
-        oscars_false = findViewById(R.id.profile_oscars_false);
-        group_true = findViewById(R.id.profile_group_more);
-        group_false = findViewById(R.id.profile_group_less);
-        action_film = findViewById(R.id.profile_action_film);
-        comedy = findViewById(R.id.profile_comedy);
-        drama = findViewById(R.id.profile_drama_film);
-        fantasy = findViewById(R.id.profile_fantasy);
-        horror = findViewById(R.id.profile_horror);
-        disaster_film = findViewById(R.id.profile_disaster_film);
-        adv_film = findViewById(R.id.profile_adventure_film);
-        scifi = findViewById(R.id.profile_scifi);
-        thriller = findViewById(R.id.profile_thriller);
-        western = findViewById(R.id.profile_western);
-        war_film = findViewById(R.id.profile_war_film);
-        romantic = findViewById(R.id.profile_romantic);
-        animated = findViewById(R.id.profile_animated_film);
-        biographical = findViewById(R.id.profile_biographical_film);
-        documentary = findViewById(R.id.profile_documentary);
-        music = findViewById(R.id.profile_music);
-        acting = findViewById(R.id.profile_acting);
-        scenography = findViewById(R.id.profile_scenography);
-        actors = findViewById(R.id.profile_actors);
-        director = findViewById(R.id.profile_director);
-        plot = findViewById(R.id.profile_plot);
-        home = findViewById(R.id.profile_home);
-        cinema = findViewById(R.id.profile_cinema);
-        outside = findViewById(R.id.profile_outside);
-        argentina = findViewById(R.id.profile_argentina);
-        australia = findViewById(R.id.profile_australia);
-        belgium = findViewById(R.id.profile_belgium);
-        france = findViewById(R.id.profile_france);
-        greece = findViewById(R.id.profile_greece);
-        spain = findViewById(R.id.profile_spain);
-        india = findViewById(R.id.profile_india);
-        japan = findViewById(R.id.profile_japan);
-        canada = findViewById(R.id.profile_canada);
-        mexico = findViewById(R.id.profile_mexico);
-        germany = findViewById(R.id.profile_germany);
-        poland = findViewById(R.id.profile_poland);
-        usa = findViewById(R.id.profile_usa);
-        uk = findViewById(R.id.profile_uk);
-        italy = findViewById(R.id.profile_italy);
-        r1990 = findViewById(R.id.profile_less_than_1990);
-        r2000 = findViewById(R.id.profile_1990_2000);
-        r2010 = findViewById(R.id.profile_2000_2010);
-        r2015 = findViewById(R.id.profile_2010_2015);
-        r2019 = findViewById(R.id.profile_2015_2019);
-        r2020 = findViewById(R.id.profile_more_than_2019);
-        popcorn = findViewById(R.id.profile_popcorn);
-        nachos = findViewById(R.id.profile_nachos);
-        chips = findViewById(R.id.profile_chips);
-        sticks = findViewById(R.id.profile_salty_sticks);
-        cookies = findViewById(R.id.profile_cookies);
-        nothing = findViewById(R.id.profile_food_nothing);
-
-        load_spinners();
+        initialize();
 
         final CheckBox[] movie_types = {action_film, comedy, drama, fantasy, horror, disaster_film, adv_film, scifi, thriller,
                 western, war_film, romantic, animated, biographical, documentary};
@@ -183,6 +103,9 @@ public class ProfileActivity extends AppCompatActivity {
         final CheckBox[] food = {popcorn, nachos, chips, sticks, cookies, nothing};
         final RadioGroup[] radioGroups = {sex, place, oscar, group};
         final RadioButton[] radioButtons = {man, home, oscars_true, group_true};
+
+        load_spinners();
+        set_profile_values(movie_types, movie_elements, country_production, year_production, food);
 
         set_values();
         max3_all_tables(movie_types, title_movies);
@@ -196,6 +119,13 @@ public class ProfileActivity extends AppCompatActivity {
         Menu nav_Menu = navigationView.getMenu();
         nav_Menu.findItem(R.id.nav_login).setVisible(false);
         nav_Menu.findItem(R.id.nav_registration).setVisible(false);
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                set_enabled(movie_types, movie_elements, country_production, year_production, food);
+            }
+        });
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,11 +162,16 @@ public class ProfileActivity extends AppCompatActivity {
                     years = get_selected(year_production);
                     foods = get_selected(food);
 
+                    String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+
                     Profile profile = new Profile(name, age, sel_sex, movies.get(0), movies.get(1), movies.get(2), elements.get(0),
                             elements.get(1), elements.get(2), sel_place, countries.get(0), countries.get(1), countries.get(2),
                             actor1, actor2, actor3, director1, director2, director3, sel_oscar, years.get(0), years.get(1),
                             years.get(2), foods.get(0), foods.get(1), foods.get(2), sel_group);
-                    update_profile();
+                    ProfileDetails profileDetails = new ProfileDetails(userID);
+                    profile_details(profileDetails);
+                    create_profile(profile);
+                    startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
                 }
 
             }
@@ -276,41 +211,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void update_profile ()  {
-
-        //IPAddress ipAddress = new IPAddress();
-        //String addr = ipAddress.get_ipaddress();
-        //String MY_URL = "http://" + addr + ":8000/rest/";
-
-        String id_profile = "1";
-        Profile profile = new Profile("marek", 19, "facet", "film1", "film2", "film3", "muzyka",
-                "cos", "cos2", "domek", "niemcy", "niemcy", "rosja",
-                "actor1", "actor2", "actor3", "director1", "director2", "director3", true,
-                "2000", "1900", "1990", "piwo", "flacha", "chipsy", "mała");
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ProfileApi.MY_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        ProfileApi profileApi= retrofit.create(ProfileApi.class);
-        Call<Profile> call = profileApi.updateProfile(profile, id_profile);
-
-        call.enqueue(new Callback<Profile>() {
-            @Override
-            public void onResponse(Call<Profile> call, Response<Profile> response) {
-                Log.d("good", "good");
-                Toast.makeText(getApplicationContext(), "good", Toast.LENGTH_LONG).show();
-            }
-            @Override
-            public void onFailure(Call<Profile> call, Throwable t) {
-                Log.d("fail", "fail");
-                Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    public void create_profile() {
+    public void create_profile(Profile profile) {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(NewProfileApi.MY_URL)
@@ -319,84 +220,154 @@ public class ProfileActivity extends AppCompatActivity {
 
         NewProfileApi newProfileApi = retrofit.create(NewProfileApi.class);
 
+        Call<Profile> call = newProfileApi.addProfile(profile);
 
-        Profile profile = new Profile("marek", 19, "facet", "film1", "film2", "film3", "muzyka",
-                "cos", "cos2", "domek", "niemcy", "niemcy", "rosja",
-                "actor1", "actor2", "actor3", "director1", "director2", "director3", true,
-                "2000", "1900", "1990", "piwo", "flacha", "chipsy", "mała");
-
-
-        Call<RequestBody> call = newProfileApi.addProfile(profile);
-
-        call.enqueue(new Callback<RequestBody>() {
+        call.enqueue(new Callback<Profile>() {
             @Override
-            public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
+            public void onResponse(Call<Profile> call, Response<Profile> response) {
                 Log.d("good", "good");
-                Toast.makeText(getApplicationContext(), "good", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "utworzono/zaktualizowano profil", Toast.LENGTH_LONG).show();
             }
             @Override
-            public void onFailure(Call<RequestBody> call, Throwable t) {
+            public void onFailure(Call<Profile> call, Throwable t) {
                 Log.d("fail", "fail");
-                Toast.makeText(getApplicationContext(), "fail", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "nie udało się utworzyć/zaktualizować profilu", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void profile_details(ProfileDetails profileDetails) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ProfileDetailsApi.MY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ProfileDetailsApi profileDetailsApi = retrofit.create(ProfileDetailsApi.class);
+
+        Call<ProfileDetails> call = profileDetailsApi.sendDetails(profileDetails);
+
+        call.enqueue(new Callback<ProfileDetails>() {
+            @Override
+            public void onResponse(Call<ProfileDetails> call, Response<ProfileDetails> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "przesłano uid", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onFailure(Call<ProfileDetails> call, Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "nie udało się przesłać uid", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void load_profile(final CheckBox[] movie_types, final CheckBox[] movie_elements, final CheckBox[] countries,
+                             final CheckBox[] years, final CheckBox[] foods) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(LoadProfileApi.MY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        LoadProfileApi loadProfileApi = retrofit.create(LoadProfileApi.class);
+
+        Call<Profile> call = loadProfileApi.loadProfile();
+
+        call.enqueue(new Callback<Profile>() {
+            @Override
+            public void onResponse(Call<Profile> call, Response<Profile> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "załadowano dane", Toast.LENGTH_LONG).show();
+
+                Profile profile = response.body();
+
+                if(profile != null) {
+                    assert profile != null;
+                    pr_name.setText(profile.get_name());
+                    pr_age.setText(String.valueOf(profile.get_age()));
+                    if (man.getText().toString().equals(profile.get_sex())) man.setChecked(true);
+                    else woman.setChecked(true);
+                    checked_checkboxes(movie_types, profile.get_movie1());
+                    checked_checkboxes(movie_types, profile.get_movie2());
+                    checked_checkboxes(movie_types, profile.get_movie3());
+                    checked_checkboxes(movie_elements, profile.get_elem1());
+                    checked_checkboxes(movie_elements, profile.get_elem2());
+                    checked_checkboxes(movie_elements, profile.get_elem3());
+                    if (home.getText().toString().equals(profile.get_place()))
+                        home.setChecked(true);
+                    else if (cinema.getText().toString().equals(profile.get_place()))
+                        cinema.setChecked(true);
+                    else outside.setChecked(true);
+                    checked_checkboxes(countries, profile.get_country1());
+                    checked_checkboxes(countries, profile.get_country2());
+                    checked_checkboxes(countries, profile.get_country3());
+                    selected_actors(spin_actors, profile.get_actor1());
+                    selected_actors(spin_actors2, profile.get_actor2());
+                    selected_actors(spin_actors3, profile.get_actor3());
+                    selected_directors(spin_directors, profile.get_director1());
+                    selected_directors(spin_directors2, profile.get_director2());
+                    selected_directors(spin_directors3, profile.get_director3());
+                    if (profile.get_oscar()) oscars_true.setChecked(true);
+                    else oscars_false.setChecked(true);
+                    checked_checkboxes(years, profile.get_years1());
+                    checked_checkboxes(years, profile.get_years2());
+                    checked_checkboxes(years, profile.get_years3());
+                    checked_checkboxes(foods, profile.get_food1());
+                    checked_checkboxes(foods, profile.get_food2());
+                    checked_checkboxes(foods, profile.get_food3());
+                    if (group_true.getText().toString().equals(profile.get_group()))
+                        group_true.setChecked(true);
+                    else group_false.setChecked(true);
+                    set_disenabled(movie_types, movie_elements, countries, years, foods);
+                }
+            }
+            @Override
+            public void onFailure(Call<Profile> call, Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "nie ma profilu", Toast.LENGTH_LONG).show();
             }
         });
 
     }
 
-    /*
-    private class ParseTask extends AsyncTask<Void, Void, String> {
-
-        HttpURLConnection urlConnection = null;
-        BufferedReader reader = null;
-        String resultJson = "";
-
-        @Override
-        protected String doInBackground(Void... params) {
-            try{
-                String site_url_json = "192.168.0.8:8000/profile";
-                URL url = new URL(site_url_json);
-
-                urlConnection = (HttpURLConnection) url.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.connect();
-
-                InputStream inputStream = urlConnection.getInputStream();
-                StringBuffer buffer = new StringBuffer();
-
-                reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                String line;
-                while ((line = reader.readLine()) != null){
-                    buffer.append(line);
-                }
-
-                resultJson = buffer.toString();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return resultJson;
-        }
-
-        protected void onPostExecute(String strJson){
-            super.onPostExecute(strJson);
-
-            try{
-                JSONArray jsonArray = new JSONArray(strJson);
-                JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-                String result_json_text = jsonObject.getString("text");
-                Log.d("FOR LOG", result_json_text);
-
-                //TextView textView = findViewById();
-                //textView.setText(result_json_text);
-
-            } catch (Exception e){
-                e.printStackTrace();
+    public void selected_actors(Spinner spinner, String val){
+        List<String> actors = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.Actors)));
+        Collections.sort(actors);
+        for(int i = 0; i < actors.size(); i++){
+            if(actors.get(i).equals(val)) {
+                spinner.setSelection(i + 1);
+                break;
             }
         }
     }
 
-     */
+    public void selected_directors(Spinner spinner, String val){
+        List<String> directors = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.Directors)));
+        Collections.sort(directors);
+        for(int i = 0; i < directors.size(); i++){
+            if(directors.get(i).equals(val)) {
+                spinner.setSelection(i + 1);
+                break;
+            }
+        }
+    }
+
+    public void checked_checkboxes(CheckBox[] checkBoxes, String val){
+        for (CheckBox checkBox : checkBoxes) {
+            if(val.equals(checkBox.getText().toString())) {
+                checkBox.setChecked(true);
+                break;
+            }
+        }
+    }
+
+    public void set_profile_values(final CheckBox[] movie_types, final CheckBox[] movie_elements, final CheckBox[] countries,
+                                   final CheckBox[] years, final CheckBox[] foods){
+        String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+        ProfileDetails profileDetails = new ProfileDetails(userID);
+        profile_details(profileDetails);
+        load_profile(movie_types, movie_elements, countries, years, foods);
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -578,27 +549,142 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    public String get_list_actors () throws IOException {
-
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url("https://imdb8.p.rapidapi.com/actors/list-most-popular-celebs?currentCountry=US&purchaseCountry=US&homeCountry=US")
-                .get()
-                .addHeader("x-rapidapi-host", "imdb8.p.rapidapi.com")
-                .addHeader("x-rapidapi-key", "22786022a0msh6820e5e922653d4p125684jsn1c5bcc911f16")
-                .build();
-        try {
-            Response response = client.newCall(request).execute();
-            return Objects.requireNonNull(response.body()).string();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        return null;
+    public void checkboxes_state(CheckBox[] checkBoxes, boolean state){
+        for (CheckBox checkBox : checkBoxes) checkBox.setEnabled(state);
     }
 
-     */
+    public void set_disenabled(CheckBox[] movies, CheckBox[] elements, CheckBox[] countries, CheckBox[] years, CheckBox[] foods){
+        pr_name.setEnabled(false);
+        pr_age.setEnabled(false);
+        man.setEnabled(false);
+        woman.setEnabled(false);
+        checkboxes_state(movies, false);
+        checkboxes_state(elements, false);
+        home.setEnabled(false);
+        cinema.setEnabled(false);
+        outside.setEnabled(false);
+        checkboxes_state(countries, false);
+        spin_actors.setEnabled(false);
+        spin_actors2.setEnabled(false);
+        spin_actors3.setEnabled(false);
+        spin_directors.setEnabled(false);
+        spin_directors2.setEnabled(false);
+        spin_directors3.setEnabled(false);
+        oscars_true.setEnabled(false);
+        oscars_false.setEnabled(false);
+        checkboxes_state(years, false);
+        checkboxes_state(foods, false);
+        group_true.setEnabled(false);
+        group_false.setEnabled(false);
+    }
+
+    public void set_enabled(CheckBox[] movies, CheckBox[] elements, CheckBox[] countries, CheckBox[] years, CheckBox[] foods){
+        pr_name.setEnabled(true);
+        pr_age.setEnabled(true);
+        man.setEnabled(true);
+        woman.setEnabled(true);
+        checkboxes_state(movies, true);
+        checkboxes_state(elements, true);
+        home.setEnabled(true);
+        cinema.setEnabled(true);
+        outside.setEnabled(true);
+        checkboxes_state(countries, true);
+        spin_actors.setEnabled(true);
+        spin_actors2.setEnabled(true);
+        spin_actors3.setEnabled(true);
+        spin_directors.setEnabled(true);
+        spin_directors2.setEnabled(true);
+        spin_directors3.setEnabled(true);
+        oscars_true.setEnabled(true);
+        oscars_false.setEnabled(true);
+        checkboxes_state(years, true);
+        checkboxes_state(foods, true);
+        group_true.setEnabled(true);
+        group_false.setEnabled(true);
+
+    }
+
+   public void initialize(){
+       drawerLayout = findViewById(R.id.drawer_layout);
+       navigationView = findViewById(R.id.navigation_view);
+
+       title_countries = findViewById(R.id.profile_title_country);
+       title_elements = findViewById(R.id.profile_title_important);
+       title_foods = findViewById(R.id.profile_title_food);
+       title_movies = findViewById(R.id.profile_title_type);
+       title_years = findViewById(R.id.profile_title_years);
+       sex = findViewById(R.id.radio_group_sex);
+       place = findViewById(R.id.radio_group_place);
+       oscar = findViewById(R.id.radio_group_oscars);
+       group = findViewById(R.id.radio_group_groups);
+       save = findViewById(R.id.profile_save_btn);
+       edit = findViewById(R.id.profile_edit_btn);
+       spin_directors = findViewById(R.id.profile_spin_directors);
+       spin_directors2 = findViewById(R.id.profile_spin_directors2);
+       spin_directors3 = findViewById(R.id.profile_spin_directors3);
+       spin_actors = findViewById(R.id.profile_spin_actors);
+       spin_actors2 = findViewById(R.id.profile_spin_actors2);
+       spin_actors3 = findViewById(R.id.profile_spin_actors3);
+       pr_name = findViewById(R.id.profile_name);
+       pr_age = findViewById(R.id.profile_age);
+       man = findViewById(R.id.profile_man);
+       woman = findViewById(R.id.profile_woman);
+       oscars_true = findViewById(R.id.profile_oscars_true);
+       oscars_false = findViewById(R.id.profile_oscars_false);
+       group_true = findViewById(R.id.profile_group_more);
+       group_false = findViewById(R.id.profile_group_less);
+       action_film = findViewById(R.id.profile_action_film);
+       comedy = findViewById(R.id.profile_comedy);
+       drama = findViewById(R.id.profile_drama_film);
+       fantasy = findViewById(R.id.profile_fantasy);
+       horror = findViewById(R.id.profile_horror);
+       disaster_film = findViewById(R.id.profile_disaster_film);
+       adv_film = findViewById(R.id.profile_adventure_film);
+       scifi = findViewById(R.id.profile_scifi);
+       thriller = findViewById(R.id.profile_thriller);
+       western = findViewById(R.id.profile_western);
+       war_film = findViewById(R.id.profile_war_film);
+       romantic = findViewById(R.id.profile_romantic);
+       animated = findViewById(R.id.profile_animated_film);
+       biographical = findViewById(R.id.profile_biographical_film);
+       documentary = findViewById(R.id.profile_documentary);
+       music = findViewById(R.id.profile_music);
+       acting = findViewById(R.id.profile_acting);
+       scenography = findViewById(R.id.profile_scenography);
+       actors = findViewById(R.id.profile_actors);
+       director = findViewById(R.id.profile_director);
+       plot = findViewById(R.id.profile_plot);
+       home = findViewById(R.id.profile_home);
+       cinema = findViewById(R.id.profile_cinema);
+       outside = findViewById(R.id.profile_outside);
+       argentina = findViewById(R.id.profile_argentina);
+       australia = findViewById(R.id.profile_australia);
+       belgium = findViewById(R.id.profile_belgium);
+       france = findViewById(R.id.profile_france);
+       greece = findViewById(R.id.profile_greece);
+       spain = findViewById(R.id.profile_spain);
+       india = findViewById(R.id.profile_india);
+       japan = findViewById(R.id.profile_japan);
+       canada = findViewById(R.id.profile_canada);
+       mexico = findViewById(R.id.profile_mexico);
+       germany = findViewById(R.id.profile_germany);
+       poland = findViewById(R.id.profile_poland);
+       usa = findViewById(R.id.profile_usa);
+       uk = findViewById(R.id.profile_uk);
+       italy = findViewById(R.id.profile_italy);
+       r1990 = findViewById(R.id.profile_less_than_1990);
+       r2000 = findViewById(R.id.profile_1990_2000);
+       r2010 = findViewById(R.id.profile_2000_2010);
+       r2015 = findViewById(R.id.profile_2010_2015);
+       r2019 = findViewById(R.id.profile_2015_2019);
+       r2020 = findViewById(R.id.profile_more_than_2019);
+       popcorn = findViewById(R.id.profile_popcorn);
+       nachos = findViewById(R.id.profile_nachos);
+       chips = findViewById(R.id.profile_chips);
+       sticks = findViewById(R.id.profile_salty_sticks);
+       cookies = findViewById(R.id.profile_cookies);
+       nothing = findViewById(R.id.profile_food_nothing);
+   }
 
 
 }

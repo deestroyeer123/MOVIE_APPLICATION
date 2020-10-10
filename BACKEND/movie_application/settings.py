@@ -17,7 +17,7 @@ DEBUG = True
 IP_ADDR = socket.gethostbyname(socket.gethostname())
 DOMAIN_NAME = os.getenv('DOMAIN_NAME')
 ALLOWED_HOSTS = ['localhost', DOMAIN_NAME, IP_ADDR]
-
+#ALLOWED_HOSTS = ['*']
 
 # Application definition
 
