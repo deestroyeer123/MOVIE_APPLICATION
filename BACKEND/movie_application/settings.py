@@ -16,8 +16,9 @@ DEBUG = True
 
 IP_ADDR = socket.gethostbyname(socket.gethostname())
 DOMAIN_NAME = os.getenv('DOMAIN_NAME')
-ALLOWED_HOSTS = ['localhost', DOMAIN_NAME, IP_ADDR]
-#ALLOWED_HOSTS = ['*']
+#ALLOWED_HOSTS = ['localhost', DOMAIN_NAME, IP_ADDR]
+ALLOWED_HOSTS = ['*']
+print(IP_ADDR)
 
 # Application definition
 
@@ -112,3 +113,6 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")

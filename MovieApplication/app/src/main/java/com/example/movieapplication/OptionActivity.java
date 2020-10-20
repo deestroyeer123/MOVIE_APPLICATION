@@ -7,14 +7,20 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.content.ContentUris;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.badge.BadgeUtils;
@@ -37,21 +44,30 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.util.Objects;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.movieapplication.RegisterActivity.users;
 
 public class OptionActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
-    DatabaseReference databaseReference;
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-    EditText op_name, op_surname, op_login, op_email;
+    EditText op_login, op_email;
     Button op_save_btn, op_edit_btn;
     ImageView img;
     Button op_photo_btn;
@@ -66,7 +82,6 @@ public class OptionActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         final ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -76,8 +91,6 @@ public class OptionActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
 
-        op_name = findViewById(R.id.opt_name);
-        op_surname = findViewById(R.id.opt_surname);
         op_login = findViewById(R.id.opt_login);
         op_email = findViewById(R.id.opt_email);
         op_save_btn = findViewById(R.id.op_save_btn);
@@ -88,24 +101,15 @@ public class OptionActivity extends AppCompatActivity {
 
         op_photo_btn = findViewById(R.id.op_photo_btn);
 
-        op_name.setEnabled(false);
-        op_surname.setEnabled(false);
         op_login.setEnabled(false);
         op_email.setEnabled(false);
 
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         Menu nav_Menu = navigationView.getMenu();
-        if(firebaseUser != null) {
-            set_values();
-            check_name_surname();
-            nav_Menu.findItem(R.id.nav_login).setVisible(false);
-            nav_Menu.findItem(R.id.nav_registration).setVisible(false);
-        }
-        else{
-            nav_Menu.findItem(R.id.nav_home).setVisible(false);
-            nav_Menu.findItem(R.id.nav_logout).setVisible(false);
-            nav_Menu.findItem(R.id.nav_profile).setVisible(false);
-        }
+
+        load_data();
+
+        nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        nav_Menu.findItem(R.id.nav_registration).setVisible(false);
 
         op_photo_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,38 +122,15 @@ public class OptionActivity extends AppCompatActivity {
         op_edit_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                op_name.setEnabled(true);
-                op_surname.setEnabled(true);
                 op_login.setEnabled(true);
                 op_email.setEnabled(true);
-                /*
-                LinearLayout.LayoutParams tableRowParams =
-                        new TableLayout.LayoutParams(0,0);
-                tableRowParams.setMargins(0,0,0,0);
-                op_edit_btn.setLayoutParams(tableRowParams);
-                op_edit_btn.setVisibility(View.INVISIBLE);
-                LinearLayout.LayoutParams tableRowParams2 =
-                        new TableLayout.LayoutParams(TableLayout.LayoutParams.WRAP_CONTENT,TableLayout.LayoutParams.WRAP_CONTENT);
-                tableRowParams.setMargins(100,0,0,0);
-                op_save_btn.setLayoutParams(tableRowParams2);
-                op_save_btn.setVisibility(View.VISIBLE);
 
-                 */
             }
         });
 
         op_save_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = op_name.getText().toString();
-                String surname = op_surname.getText().toString();
-                op_name.setText(name);
-                op_surname.setText(surname);
-                //update jakiś
-                //write_val("name", name);
-                //write_val("surname", surname);
-                op_name.setEnabled(false);
-                op_surname.setEnabled(false);
                 op_login.setEnabled(false);
                 op_email.setEnabled(false);
             }
@@ -158,8 +139,6 @@ public class OptionActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent login = new Intent(OptionActivity.this, LoginActivity.class);
-                Intent registration = new Intent(OptionActivity.this, RegisterActivity.class);
                 Intent log_out = new Intent(OptionActivity.this, MainActivity.class);
                 Intent home = new Intent(OptionActivity.this, HomeActivity.class);
                 Intent profile = new Intent(OptionActivity.this, ProfileActivity.class);
@@ -169,16 +148,6 @@ public class OptionActivity extends AppCompatActivity {
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
                         startActivity(home);
-                        return true;
-                    case R.id.nav_login:
-                        item.setChecked(true);
-                        drawerLayout.closeDrawers();
-                        startActivity(login);
-                        return true;
-                    case R.id.nav_registration:
-                        item.setChecked(true);
-                        drawerLayout.closeDrawers();
-                        startActivity(registration);
                         return true;
                     case R.id.nav_profile:
                         item.setChecked(true);
@@ -193,6 +162,9 @@ public class OptionActivity extends AppCompatActivity {
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
                         FirebaseAuth.getInstance().signOut();
+                        log_out.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        log_out.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        log_out.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(log_out);
                         return true;
                 }
@@ -213,53 +185,110 @@ public class OptionActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void load_data (){
+        String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+        ProfileDetails profileDetails = new ProfileDetails(userID);
+        profile_details(profileDetails);
+        set_values();
+    }
+
     public void set_values (){
-        final String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-        databaseReference = databaseReference.child(users).child(userID);
-        ValueEventListener postListener = new ValueEventListener() {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(LoadUserApi.MY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        LoadUserApi loadUserApi = retrofit.create(LoadUserApi.class);
+
+        Call<User> call = loadUserApi.loadUserDetails();
+
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user =  snapshot.getValue(User.class);
-                assert user != null;
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "załadowano header, email, login", Toast.LENGTH_LONG).show();
+
+                User user = response.body();
                 View nav_header = navigationView.getHeaderView(0);
                 TextView header = nav_header.findViewById(R.id.nav_header);
-                header.setText(user.get_login());
-                op_email.setText(user.get_email());
-                op_login.setText(user.get_login());
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        databaseReference.addListenerForSingleValueEvent(postListener);
-        databaseReference.removeEventListener(postListener);
-
-    }
-
-    public void check_name_surname (){
-        final String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-        databaseReference = databaseReference.child(users).child(userID);
-        ValueEventListener postListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user =  snapshot.getValue(User.class);
                 assert user != null;
-                //sprawdzenie czy wypelnione
-                //if(!(user.get_name().equals(""))) op_name.setText(user.get_name());
-                //if(!(user.get_surname().equals(""))) op_surname.setText(user.get_surname());
-            }
+                header.setText(user.get_login());
+                op_login.setText(user.get_login());
+                op_email.setText(user.get_email());
 
+            }
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "nie załadowano headera, emaila, loginu", Toast.LENGTH_LONG).show();
             }
-        };
-        databaseReference.addListenerForSingleValueEvent(postListener);
-        databaseReference.removeEventListener(postListener);
+        });
 
     }
+
+    private void put_storage(String path) {
+
+        File imageFile = new File(path);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(UserStorageApi.MY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+
+        UserStorageApi userStorageApi= retrofit.create(UserStorageApi.class);
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/data"), imageFile);
+        MultipartBody.Part multiPartBody = MultipartBody.Part
+                .createFormData("model_pic", imageFile.getName(), requestBody);
+
+
+
+        Call<RequestBody> call = userStorageApi.putStorage(multiPartBody);
+
+        call.enqueue(new Callback<RequestBody>() {
+            @Override
+            public void onResponse(Call<RequestBody> call, Response<RequestBody> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "zapisano img", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onFailure(Call<RequestBody> call, Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "nie zapisano img", Toast.LENGTH_LONG).show();
+            }
+        });
+
+
+    }
+
+    public void profile_details(ProfileDetails profileDetails) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ProfileDetailsApi.MY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ProfileDetailsApi profileDetailsApi = retrofit.create(ProfileDetailsApi.class);
+
+        Call<ProfileDetails> call = profileDetailsApi.sendDetails(profileDetails);
+
+        call.enqueue(new Callback<ProfileDetails>() {
+            @Override
+            public void onResponse(Call<ProfileDetails> call, Response<ProfileDetails> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "przesłano uid", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onFailure(Call<ProfileDetails> call, Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "nie udało się przesłać uid", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -267,6 +296,22 @@ public class OptionActivity extends AppCompatActivity {
 
         if (requestCode == 99 && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
+            img.setImageURI(null);
+            img.setBackground(null);
+            img.setImageURI(selectedImage);
+
+            /*
+            String path = getPath(getApplicationContext(), selectedImage);
+
+
+            String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+            ProfileDetails profileDetails = new ProfileDetails(userID);
+            profile_details(profileDetails);
+            put_storage(path);
+
+             */
+
+            /*
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
             assert selectedImage != null;
@@ -291,12 +336,14 @@ public class OptionActivity extends AppCompatActivity {
             img.setBackground(null);
             img.setImageBitmap(bmp);
 
+             */
+
         }
 
 
     }
 
-
+/*
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
         ParcelFileDescriptor parcelFileDescriptor =
                 getContentResolver().openFileDescriptor(uri, "r");
@@ -307,8 +354,106 @@ public class OptionActivity extends AppCompatActivity {
         return image;
     }
 
-    private void write_val(String field, String val) {
-        String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-        databaseReference.child(users).child(userID).child(field).setValue(val);
+ */
+
+/*
+
+    public static String getPath(final Context context, final Uri uri) {
+
+        final boolean isKitKat = Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
+
+        // DocumentProvider
+        if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+            // ExternalStorageProvider
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                if ("primary".equalsIgnoreCase(type)) {
+                    return Environment.getExternalStorageDirectory() + "/" + split[1];
+                }
+
+            }
+            // DownloadsProvider
+            else if (isDownloadsDocument(uri)) {
+
+                final String id = DocumentsContract.getDocumentId(uri);
+                final Uri contentUri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+
+                return getDataColumn(context, contentUri, null, null);
+            }
+            // MediaProvider
+            else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+
+                Uri contentUri = null;
+                if ("image".equals(type)) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+
+                final String selection = "_id=?";
+                final String[] selectionArgs = new String[] {
+                        split[1]
+                };
+
+                return getDataColumn(context, contentUri, selection, selectionArgs);
+            }
+        }
+        // MediaStore (and general)
+        else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            return getDataColumn(context, uri, null, null);
+        }
+        // File
+        else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+
+        return null;
     }
+
+    public static String getDataColumn(Context context, Uri uri, String selection,
+                                       String[] selectionArgs) {
+
+        Cursor cursor = null;
+        final String column = "_data";
+        final String[] projection = {
+                column
+        };
+
+        try {
+            cursor = context.getContentResolver().query(uri, projection, selection, selectionArgs,
+                    null);
+            if (cursor != null && cursor.moveToFirst()) {
+                final int column_index = cursor.getColumnIndexOrThrow(column);
+                return cursor.getString(column_index);
+            }
+        } finally {
+            if (cursor != null)
+                cursor.close();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+ */
+
 }

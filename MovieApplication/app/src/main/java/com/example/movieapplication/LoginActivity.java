@@ -21,8 +21,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
@@ -66,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
         nav_Menu.findItem(R.id.nav_home).setVisible(false);
         nav_Menu.findItem(R.id.nav_logout).setVisible(false);
         nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+        nav_Menu.findItem(R.id.nav_settings).setVisible(false);
 
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -84,7 +88,6 @@ public class LoginActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent settings = new Intent(LoginActivity.this, OptionActivity.class);
                 Intent registration = new Intent(LoginActivity.this, RegisterActivity.class);
                 switch (item.getItemId())
                 {
@@ -96,11 +99,6 @@ public class LoginActivity extends AppCompatActivity {
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
                         startActivity(registration);
-                        return true;
-                    case R.id.nav_settings:
-                        item.setChecked(true);
-                        drawerLayout.closeDrawers();
-                        startActivity(settings);
                         return true;
                 }
 
@@ -119,7 +117,20 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(!task.isSuccessful()){
-                                Toast.makeText(LoginActivity.this, "Niepowodzenie, spróbuj jeszcze raz", Toast.LENGTH_SHORT).show();
+                                try {
+                                    throw Objects.requireNonNull(task.getException());
+                                } catch (FirebaseAuthInvalidUserException e) {
+                                    log_email.setError("Niepoprawny adres email!");
+                                    log_email.requestFocus();
+                                } catch (FirebaseAuthInvalidCredentialsException e) {
+                                    log_password.setError("Niepoprawne hasło!");
+                                    log_password.requestFocus();
+                                } catch (FirebaseNetworkException e) {
+                                    Toast.makeText(LoginActivity.this, "Błąd sieci! Sprawdź swoje połączenie", Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(LoginActivity.this, "Niepowodzenie, spróbuj jeszcze raz", Toast.LENGTH_LONG).show();
+                                }
                             }
                             else{
                                 startActivity(new Intent(LoginActivity.this, HomeActivity.class));

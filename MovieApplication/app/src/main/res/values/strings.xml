@@ -24,6 +24,8 @@
     <string name="op_surname">Nazwisko</string>
     <string name="not_registered">Nie masz jeszcze konta?</string>
     <string name="register">Zarejestruj się</string>
+    <string name="already_registered">Masz już konto?</string>
+    <string name="just_login">Zaloguj się</string>
     <string name="profile_name">Imię</string>
     <string name="profile_age">Wiek</string>
     <string name="profile_man">Mężczyzna</string>
@@ -302,5 +304,10 @@
         <item>David Niven</item>
         <item>Elizabeth Taylro</item>
         <item>Ralph Fiennes</item>
+        <item>Tom Holland</item>
+        <item>Leonardo DiCaprio</item>
+        <item>Jude Law</item>
+        <item>Adam Sandler</item>
+        <item>Ryan Reynolds</item>
     </string-array>
 </resources>

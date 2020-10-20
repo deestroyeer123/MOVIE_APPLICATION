@@ -8,8 +8,10 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +26,7 @@ import android.widget.TextView;
 
 import android.util.Log;
 import android.widget.Toast;
+import android.widget.ViewSwitcher;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +36,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,7 +51,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-
+import static com.example.movieapplication.RegisterActivity.newUser;
 import static com.example.movieapplication.RegisterActivity.users;
 
 
@@ -58,6 +63,10 @@ public class ProfileActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
+
+    ViewSwitcher viewSwitcher;
+    private static final int VIEV_CONTENT = 0;
+    private static final int VIEW_PROGRESS_BAR_INDEX = 1;
 
     TextView title_movies, title_elements, title_countries, title_years, title_foods;
     RadioGroup sex, place, oscar, group;
@@ -107,7 +116,6 @@ public class ProfileActivity extends AppCompatActivity {
         load_spinners();
         set_profile_values(movie_types, movie_elements, country_production, year_production, food);
 
-        set_values();
         max3_all_tables(movie_types, title_movies);
         max3_all_tables(movie_elements, title_elements);
         max3_all_tables(country_production, title_countries);
@@ -202,6 +210,9 @@ public class ProfileActivity extends AppCompatActivity {
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
                         FirebaseAuth.getInstance().signOut();
+                        log_out.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        log_out.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        log_out.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(log_out);
                         return true;
                 }
@@ -282,7 +293,6 @@ public class ProfileActivity extends AppCompatActivity {
                 Profile profile = response.body();
 
                 if(profile != null) {
-                    assert profile != null;
                     pr_name.setText(profile.get_name());
                     pr_age.setText(String.valueOf(profile.get_age()));
                     if (man.getText().toString().equals(profile.get_sex())) man.setChecked(true);
@@ -325,6 +335,17 @@ public class ProfileActivity extends AppCompatActivity {
             public void onFailure(Call<Profile> call, Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie ma profilu", Toast.LENGTH_LONG).show();
+
+                if (newUser){
+                    //pr_name.setText("siema");
+                    //Toast.makeText(getApplicationContext(), "siema", Toast.LENGTH_LONG).show();
+                    //
+                    //public void onBackPressed(){
+                    //
+                    //}
+                    //moveTaskToBack(false);
+                    newUser = false;
+                }
             }
         });
 
@@ -363,10 +384,13 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void set_profile_values(final CheckBox[] movie_types, final CheckBox[] movie_elements, final CheckBox[] countries,
                                    final CheckBox[] years, final CheckBox[] foods){
+        viewSwitcher.setDisplayedChild(VIEW_PROGRESS_BAR_INDEX);
         String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         ProfileDetails profileDetails = new ProfileDetails(userID);
         profile_details(profileDetails);
         load_profile(movie_types, movie_elements, countries, years, foods);
+        set_values();
+        viewSwitcher.setDisplayedChild(VIEV_CONTENT);
     }
 
     @Override
@@ -381,25 +405,35 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void set_values (){
-        final String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-        databaseReference = databaseReference.child(users).child(userID);
-        ValueEventListener postListener = new ValueEventListener() {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(LoadUserApi.MY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        LoadUserApi loadUserApi = retrofit.create(LoadUserApi.class);
+
+        Call<User> call = loadUserApi.loadUserDetails();
+
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user =  snapshot.getValue(User.class);
-                assert user != null;
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "załadowano header", Toast.LENGTH_LONG).show();
+
+                User user = response.body();
                 View nav_header = navigationView.getHeaderView(0);
                 TextView header = nav_header.findViewById(R.id.nav_header);
+                assert user != null;
                 header.setText(user.get_login());
-            }
 
+            }
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "nie załadowano headera", Toast.LENGTH_LONG).show();
             }
-        };
-        databaseReference.addListenerForSingleValueEvent(postListener);
-        databaseReference.removeEventListener(postListener);
+        });
 
     }
 
@@ -576,6 +610,7 @@ public class ProfileActivity extends AppCompatActivity {
         checkboxes_state(foods, false);
         group_true.setEnabled(false);
         group_false.setEnabled(false);
+        save.setEnabled(false);
     }
 
     public void set_enabled(CheckBox[] movies, CheckBox[] elements, CheckBox[] countries, CheckBox[] years, CheckBox[] foods){
@@ -601,13 +636,14 @@ public class ProfileActivity extends AppCompatActivity {
         checkboxes_state(foods, true);
         group_true.setEnabled(true);
         group_false.setEnabled(true);
-
+        save.setEnabled(true);
     }
 
    public void initialize(){
        drawerLayout = findViewById(R.id.drawer_layout);
        navigationView = findViewById(R.id.navigation_view);
 
+       viewSwitcher = findViewById(R.id.VSwitcher);
        title_countries = findViewById(R.id.profile_title_country);
        title_elements = findViewById(R.id.profile_title_important);
        title_foods = findViewById(R.id.profile_title_food);

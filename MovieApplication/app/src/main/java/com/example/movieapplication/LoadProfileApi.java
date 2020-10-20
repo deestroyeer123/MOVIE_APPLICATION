@@ -6,7 +6,7 @@ import retrofit2.http.GET;
 
 public interface LoadProfileApi {
 
-    String MY_URL = "http://192.168.0.4:8000";
+    String MY_URL = "http://192.168.0.3:8000";
 
     @GET("/profile/load/")
     Call<Profile> loadProfile();

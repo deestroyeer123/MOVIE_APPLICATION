@@ -36,42 +36,6 @@
                 android:layout_height="wrap_content">
 
                 <EditText
-                    android:id="@+id/opt_name"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="5dp"
-                    android:padding="5dp"
-                    android:background="@drawable/custom_field"
-                    android:textColorHint="@color/Silver"
-                    android:textColor="@color/White"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:inputType="textPersonName"
-                    android:importantForAutofill="no"
-                    android:hint="@string/op_name" />
-
-                <EditText
-                    android:id="@+id/opt_surname"
-                    android:layout_weight="1"
-                    android:layout_marginStart="5dp"
-                    android:padding="5dp"
-                    android:background="@drawable/custom_field"
-                    android:textColorHint="@color/Silver"
-                    android:textColor="@color/White"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:inputType="textPersonName"
-                    android:importantForAutofill="no"
-                    android:hint="@string/op_surname" />
-
-
-            </TableRow>
-
-            <TableRow
-                android:layout_marginBottom="15dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
                     android:id="@+id/opt_login"
                     android:layout_weight="1"
                     android:padding="5dp"

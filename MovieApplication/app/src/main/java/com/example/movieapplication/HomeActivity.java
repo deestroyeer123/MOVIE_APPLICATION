@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,11 +31,16 @@ import static com.example.movieapplication.RegisterActivity.users;
 
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class HomeActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener authStateListener;
-    DatabaseReference databaseReference;
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -52,7 +58,6 @@ public class HomeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         final ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -68,8 +73,7 @@ public class HomeActivity extends AppCompatActivity {
 
         home_header = findViewById(R.id.welcome);
 
-        set_values();
-
+        load_data();
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -98,6 +102,9 @@ public class HomeActivity extends AppCompatActivity {
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
                         FirebaseAuth.getInstance().signOut();
+                        log_out.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        log_out.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        log_out.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(log_out);
                         return true;
                 }
@@ -105,24 +112,6 @@ public class HomeActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        /*
-        final String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-        databaseReference = databaseReference.child(users).child(userID).child("login");
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String val = snapshot.getValue(String.class);
-                home_header.append(" " + val);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-         */
 
     }
 
@@ -137,27 +126,69 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void load_data (){
+        String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
+        ProfileDetails profileDetails = new ProfileDetails(userID);
+        profile_details(profileDetails);
+        set_values();
+    }
+
     public void set_values (){
-        final String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-        databaseReference = databaseReference.child(users).child(userID);
-        ValueEventListener postListener = new ValueEventListener() {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(LoadUserApi.MY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        LoadUserApi loadUserApi = retrofit.create(LoadUserApi.class);
+
+        Call<User> call = loadUserApi.loadUserDetails();
+
+        call.enqueue(new Callback<User>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                User user = snapshot.getValue(User.class);
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "załadowano header", Toast.LENGTH_LONG).show();
+
+                User user = response.body();
                 View nav_header = navigationView.getHeaderView(0);
                 TextView header = nav_header.findViewById(R.id.nav_header);
                 assert user != null;
                 header.setText(user.get_login());
-            }
 
+            }
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "nie załadowano headera", Toast.LENGTH_LONG).show();
             }
-        };
-        databaseReference.addListenerForSingleValueEvent(postListener);
-        databaseReference.removeEventListener(postListener);
+        });
 
+    }
+
+    public void profile_details(ProfileDetails profileDetails) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ProfileDetailsApi.MY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ProfileDetailsApi profileDetailsApi = retrofit.create(ProfileDetailsApi.class);
+
+        Call<ProfileDetails> call = profileDetailsApi.sendDetails(profileDetails);
+
+        call.enqueue(new Callback<ProfileDetails>() {
+            @Override
+            public void onResponse(Call<ProfileDetails> call, Response<ProfileDetails> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "przesłano uid", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onFailure(Call<ProfileDetails> call, Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "nie udało się przesłać uid", Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
 

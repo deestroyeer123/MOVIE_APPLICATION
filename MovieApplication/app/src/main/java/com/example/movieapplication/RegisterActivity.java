@@ -23,15 +23,25 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -41,10 +51,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText reg_login, reg_email, reg_password, reg_password2;
     Button reg_btn;
+    TextView tv_login;
 
     FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
     public static String users = "users";
+    public static boolean newUser = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +82,9 @@ public class RegisterActivity extends AppCompatActivity {
         nav_Menu.findItem(R.id.nav_home).setVisible(false);
         nav_Menu.findItem(R.id.nav_logout).setVisible(false);
         nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+        nav_Menu.findItem(R.id.nav_settings).setVisible(false);
 
+        tv_login = findViewById(R.id.tv_login);
         reg_login = findViewById(R.id.log_login);
         reg_password = findViewById(R.id.log_password);
         reg_password2 = findViewById(R.id.log_password_confirm);
@@ -81,7 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String login = reg_login.getText().toString();
-                String password = reg_password.getText().toString();
+                final String password = reg_password.getText().toString();
                 String password2 = reg_password2.getText().toString();
                 final String email = reg_email.getText().toString();
                 if(required_fields_ok(login, email, password, password2)) {
@@ -90,27 +104,31 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(!task.isSuccessful()){
-                                Toast.makeText(RegisterActivity.this, "Niepowodzenie, spróbuj jeszcze raz", Toast.LENGTH_SHORT).show();
+                                try {
+                                    throw Objects.requireNonNull(task.getException());
+                                } catch(FirebaseAuthWeakPasswordException e) {
+                                    reg_password.setError("Zbyt słabe hasło! Hasło musi zawierać minimum 6 znaków!");
+                                    reg_password.requestFocus();
+                                } catch (FirebaseAuthInvalidCredentialsException e) {
+                                    reg_email.setError("Niepoprawny format adresu mailowego!");
+                                    reg_email.requestFocus();
+                                } catch (FirebaseAuthUserCollisionException e) {
+                                    reg_email.setError("Istnieje już konto z podanym adresem mailowym!");
+                                    reg_email.requestFocus();
+                                } catch(Exception e) {
+                                    e.printStackTrace();
+                                    Toast.makeText(RegisterActivity.this, "Niepowodzenie, spróbuj jeszcze raz", Toast.LENGTH_LONG).show();
+                                }
                             }
                             else{
                                 String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
-                                writeNewUser(userID, login, email);
-                                FirebaseUser user = firebaseAuth.getCurrentUser();
-                                UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                                        .setDisplayName(login)
-                                        //.setPhotoUri(Uri.parse("https://example.com/jane-q-user/profile.jpg"))
-                                        .build();
-
-                                user.updateProfile(profileUpdates)
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Toast.makeText(RegisterActivity.this, "Zaktualizowano", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        });
-                                startActivity(new Intent(RegisterActivity.this, HomeActivity.class));
+                                ProfileDetails profileDetails = new ProfileDetails(userID);
+                                User user = new User(login, email);
+                                profile_details(profileDetails);
+                                createNewUser(user);
+                                newUser = true;
+                                Toast.makeText(RegisterActivity.this, "Zarejestrowano", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(RegisterActivity.this, ProfileActivity.class));
                             }
                         }
                     });
@@ -120,11 +138,18 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        tv_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent login = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(login);
+            }
+        });
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Intent login = new Intent(RegisterActivity.this, LoginActivity.class);
-                Intent settings = new Intent(RegisterActivity.this, OptionActivity.class);
                 switch (item.getItemId())
                 {
                     case R.id.nav_login:
@@ -135,11 +160,6 @@ public class RegisterActivity extends AppCompatActivity {
                     case R.id.nav_registration:
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
-                        return true;
-                    case R.id.nav_settings:
-                        item.setChecked(true);
-                        drawerLayout.closeDrawers();
-                        startActivity(settings);
                         return true;
                 }
 
@@ -194,9 +214,54 @@ public class RegisterActivity extends AppCompatActivity {
         return j == tab_edit.length;
     }
 
-    private void writeNewUser(String userID, String login, String email) {
-        User user = new User(login, email, "", "");
+    public void profile_details(ProfileDetails profileDetails) {
 
-        databaseReference.child(users).child(userID).setValue(user);
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ProfileDetailsApi.MY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ProfileDetailsApi profileDetailsApi = retrofit.create(ProfileDetailsApi.class);
+
+        Call<ProfileDetails> call = profileDetailsApi.sendDetails(profileDetails);
+
+        call.enqueue(new Callback<ProfileDetails>() {
+            @Override
+            public void onResponse(Call<ProfileDetails> call, Response<ProfileDetails> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "przesłano uid", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onFailure(Call<ProfileDetails> call, Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "nie udało się przesłać uid", Toast.LENGTH_LONG).show();
+            }
+        });
     }
+
+    public void createNewUser(User user) {
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(NewUserApi.MY_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        NewUserApi newUserApi = retrofit.create(NewUserApi.class);
+
+        Call<User> call = newUserApi.addUser(user);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "Zarejestrowano", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "Nie udało się zarejestrować", Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
 }
