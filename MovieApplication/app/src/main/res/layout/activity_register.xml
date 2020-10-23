@@ -101,6 +101,24 @@
 
             </LinearLayout>
 
+            <ProgressBar
+                android:id="@+id/reg_progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/White"
+                android:visibility="invisible"
+                tools:ignore="UnusedAttribute" />
+
+            <TextView
+                android:id="@+id/reg_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/profile_loading"
+                android:layout_gravity="center"
+                android:visibility="invisible"
+                android:textColor="@color/White"/>
+
         </LinearLayout>
 
     </LinearLayout>

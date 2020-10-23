@@ -5,7 +5,7 @@ import retrofit2.http.GET;
 
 public interface LoadUserApi {
 
-    String MY_URL = "http://192.168.0.3:8000";
+    String MY_URL = "http://192.168.43.139:8000";
 
     @GET("/user/details/")
     Call<User> loadUserDetails();

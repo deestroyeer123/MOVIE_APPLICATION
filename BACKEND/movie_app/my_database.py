@@ -50,6 +50,7 @@ class DatabaseHelper():
             del listValues[17]
             del listValues[20]
             listProfiles.append(listValues)
+            listProfiles.append(x)
             listValues = []
         return listProfiles
 
@@ -92,3 +93,41 @@ class DatabaseHelper():
             baseList.append(baseValues)
             baseValues = []
         return baseList
+
+    def updateGrups(userID, values):
+        db.child("Groups").child(userID).update(values)
+
+    def getProfileToClassify(userID):
+        listProfiles = []
+        listValues = []
+        profile = db.child("Profiles").child(userID).get()
+        for y in profile.val():
+            listValues.append(profile.val()[y])
+        del listValues[17]
+        del listValues[20]
+        listProfiles.append(listValues)
+        listValues = []
+        return listProfiles
+
+    def getUsersGroups():
+        listGroups = []
+        listValues = []
+        groupsUsers = db.child("Groups").get()
+        for x in groupsUsers.val():
+            values = db.child("Groups").child(x).get()
+            for y in values.val():
+                listValues.append(values.val()[y])
+            listGroups.append(listValues)
+            listGroups.append(x)
+            listValues = []
+        return listGroups
+
+    def groupsExist(userID):
+        values = db.child("Groups").get()
+        if values.val() == None:
+            return False
+        else:
+            for x in values.val():
+                if x == userID:
+                    return True
+            return False

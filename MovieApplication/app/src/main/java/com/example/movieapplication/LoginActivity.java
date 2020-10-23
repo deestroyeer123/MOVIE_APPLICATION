@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,8 @@ public class LoginActivity extends AppCompatActivity {
     Toolbar toolbar;
     EditText log_email, log_password;
     Button log_btn;
-    TextView tv_register;
+    TextView tv_register, loading;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,8 @@ public class LoginActivity extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
+        progressBar = findViewById(R.id.login_progress_bar);
+        loading = findViewById(R.id.login_loading);
         log_email = findViewById(R.id.log_email);
         log_password = findViewById(R.id.log_password);
         log_btn = findViewById(R.id.log_btn);
@@ -112,6 +116,8 @@ public class LoginActivity extends AppCompatActivity {
                 String email = log_email.getText().toString();
                 String password = log_password.getText().toString();
                 if(required_fields_ok(email, password)) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    loading.setVisibility(View.VISIBLE);
                     firebaseAuth.signInWithEmailAndPassword(email, password).
                             addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override

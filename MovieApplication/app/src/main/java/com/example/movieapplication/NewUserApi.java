@@ -6,7 +6,7 @@ import retrofit2.http.POST;
 
 public interface NewUserApi {
 
-    String MY_URL = "http://192.168.0.3:8000";
+    String MY_URL = "http://192.168.43.139:8000";
 
     @POST("/user/")
     Call<User> addUser(@Body User user);

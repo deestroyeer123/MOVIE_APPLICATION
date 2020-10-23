@@ -16,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     Toolbar toolbar;
 
+    ProgressBar progressBar;
+    TextView loading;
+    LinearLayout linearLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +72,10 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
 
+        progressBar = findViewById(R.id.main_progress_bar);
+        loading = findViewById(R.id.main_loading);
+        linearLayout = findViewById(R.id.main_layout);
+
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         Menu nav_Menu = navigationView.getMenu();
         if(firebaseUser != null) {
@@ -74,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
             nav_Menu.findItem(R.id.nav_registration).setVisible(false);
         }
         else{
+            progressBar.setVisibility(View.INVISIBLE);
+            linearLayout.setVisibility(View.VISIBLE);
+            loading.setVisibility(View.INVISIBLE);
             nav_Menu.findItem(R.id.nav_home).setVisible(false);
             nav_Menu.findItem(R.id.nav_logout).setVisible(false);
             nav_Menu.findItem(R.id.nav_profile).setVisible(false);
@@ -134,6 +147,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void load_data (){
+        progressBar.setVisibility(View.VISIBLE);
+        linearLayout.setVisibility(View.INVISIBLE);
+        loading.setVisibility(View.VISIBLE);
         String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         ProfileDetails profileDetails = new ProfileDetails(userID);
         profile_details(profileDetails);
@@ -190,12 +206,19 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "zainicjalizowano bazę wyborów", Toast.LENGTH_LONG).show();
 
+                progressBar.setVisibility(View.INVISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.INVISIBLE);
+
             }
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie udało się zainicjalizować bazy wyborów", Toast.LENGTH_LONG).show();
 
+                progressBar.setVisibility(View.INVISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.INVISIBLE);
             }
         });
 

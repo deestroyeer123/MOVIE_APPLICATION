@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -71,6 +72,9 @@ public class OptionActivity extends AppCompatActivity {
     Button op_save_btn, op_edit_btn;
     ImageView img;
     Button op_photo_btn;
+    LinearLayout linearLayout;
+    ProgressBar progressBar;
+    TextView loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +95,9 @@ public class OptionActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
 
+        linearLayout = findViewById(R.id.layout);
+        progressBar = findViewById(R.id.op_progress_bar);
+        loading = findViewById(R.id.op_loading);
         op_login = findViewById(R.id.opt_login);
         op_email = findViewById(R.id.opt_email);
         op_save_btn = findViewById(R.id.op_save_btn);
@@ -186,6 +193,9 @@ public class OptionActivity extends AppCompatActivity {
     }
 
     public void load_data (){
+        progressBar.setVisibility(View.VISIBLE);
+        linearLayout.setVisibility(View.INVISIBLE);
+        loading.setVisibility(View.VISIBLE);
         String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         ProfileDetails profileDetails = new ProfileDetails(userID);
         profile_details(profileDetails);
@@ -216,12 +226,19 @@ public class OptionActivity extends AppCompatActivity {
                 header.setText(user.get_login());
                 op_login.setText(user.get_login());
                 op_email.setText(user.get_email());
+                progressBar.setVisibility(View.INVISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.INVISIBLE);
 
             }
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie załadowano headera, emaila, loginu", Toast.LENGTH_LONG).show();
+
+                progressBar.setVisibility(View.INVISIBLE);
+                linearLayout.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.INVISIBLE);
             }
         });
 

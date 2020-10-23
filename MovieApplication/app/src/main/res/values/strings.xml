@@ -51,6 +51,7 @@
     <string name="profile_plot">Fabuła</string>
     <string name="profile_scenography">Scenografia</string>
     <string name="profile_director">Reżyser</string>
+    <string name="profile_loading">Ładowanie…</string>
     <string name="profile_title_important">Na co zwracasz uwagę w filmie? (wybierz 3)</string>
     <string name="profile_title_place">Gdzie lubisz oglądać filmy?</string>
     <string name="profile_title_type">Jakie rodzaje filmów preferujesz? (wybierz 3)</string>
@@ -101,6 +102,16 @@
     <string name="profile_edit_btn">Edytuj</string>
     <string name="profile_spin_actors">Aktorzy</string>
     <string name="profile_spin_directors">Reżyserzy</string>
+    <string name="profile_user_movies">Ulubione rodzaje filmów</string>
+    <string name="profile_user_elem">Co jest najważniejsze w filmie</string>
+    <string name="profile_user_place">Ulubione miejsce na oglądanie filmu</string>
+    <string name="profile_user_countries">Ulubione kraje produkcji filmów</string>
+    <string name="profile_user_actors">Ulubieni aktorzy</string>
+    <string name="profile_user_directors">Ulubieni reżyserzy</string>
+    <string name="profile_user_oscar">Czy oglądam tylko produkcje oscarowe?</string>
+    <string name="profile_user_years">Z jakich lat lubię filmy</string>
+    <string name="profile_user_foods">Ulubione jedzenie do filmu</string>
+    <string name="profile_user_group">Jaka grupa jest do oglądania filmu najlepsza?</string>
 
     <string-array name="Directors">
         <item>Quentin Tarantino</item>

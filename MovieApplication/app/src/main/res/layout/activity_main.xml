@@ -23,15 +23,43 @@
 
         </include>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="50dp">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <ProgressBar
+            android:id="@+id/main_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:indeterminateTint="@color/White"
+            android:paddingTop="200dp"
+            android:visibility="invisible"
+            tools:ignore="UnusedAttribute" />
+
+        <TextView
+            android:id="@+id/main_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile_loading"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/main_progress_bar"
+            android:visibility="invisible"
+            android:textColor="@color/White"/>
+
+            <LinearLayout
+                android:id="@+id/main_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible"
+                android:padding="50dp">
 
 
 
-        </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 

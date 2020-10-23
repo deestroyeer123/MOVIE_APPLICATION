@@ -15,5 +15,6 @@ urlpatterns = [
     path('user/details/', views.userDetails.as_view()),
     path('profile/base/', views.initializeBase),
     path('user/storage/', views.userStorage.as_view()),
-    path('profile/cos/', views.cos),
+    path('learn/', views.learnModel),
+    path('matched/', views.getMatchedUsers.as_view()),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

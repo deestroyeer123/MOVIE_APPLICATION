@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +52,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     EditText reg_login, reg_email, reg_password, reg_password2;
     Button reg_btn;
-    TextView tv_login;
+    TextView tv_login, loading;
+    ProgressBar progressBar;
+    String ost_login, ost_email;
 
     FirebaseAuth firebaseAuth;
     private DatabaseReference databaseReference;
@@ -84,6 +87,8 @@ public class RegisterActivity extends AppCompatActivity {
         nav_Menu.findItem(R.id.nav_profile).setVisible(false);
         nav_Menu.findItem(R.id.nav_settings).setVisible(false);
 
+        loading = findViewById(R.id.reg_loading);
+        progressBar = findViewById(R.id.reg_progress_bar);
         tv_login = findViewById(R.id.tv_login);
         reg_login = findViewById(R.id.log_login);
         reg_password = findViewById(R.id.log_password);
@@ -99,6 +104,8 @@ public class RegisterActivity extends AppCompatActivity {
                 String password2 = reg_password2.getText().toString();
                 final String email = reg_email.getText().toString();
                 if(required_fields_ok(login, email, password, password2)) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    loading.setVisibility(View.VISIBLE);
                     firebaseAuth.createUserWithEmailAndPassword(email, password).
                             addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -121,14 +128,11 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                             }
                             else{
+                                ost_login = login;
+                                ost_email = email;
                                 String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
                                 ProfileDetails profileDetails = new ProfileDetails(userID);
-                                User user = new User(login, email);
                                 profile_details(profileDetails);
-                                createNewUser(user);
-                                newUser = true;
-                                Toast.makeText(RegisterActivity.this, "Zarejestrowano", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(RegisterActivity.this, ProfileActivity.class));
                             }
                         }
                     });
@@ -230,6 +234,12 @@ public class RegisterActivity extends AppCompatActivity {
             public void onResponse(Call<ProfileDetails> call, Response<ProfileDetails> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "przesłano uid", Toast.LENGTH_LONG).show();
+
+                User user = new User(ost_login, ost_email);
+                createNewUser(user);
+                newUser = true;
+                Toast.makeText(RegisterActivity.this, "Zarejestrowano", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(RegisterActivity.this, ProfileActivity.class));
             }
             @Override
             public void onFailure(Call<ProfileDetails> call, Throwable t) {

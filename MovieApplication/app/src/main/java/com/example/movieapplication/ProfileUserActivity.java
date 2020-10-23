@@ -4,21 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -27,98 +25,92 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import static com.example.movieapplication.RegisterActivity.users;
-
-import java.util.List;
+import java.io.File;
 import java.util.Objects;
 
-import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import android.app.Activity;
-import android.content.res.Resources;
-import android.os.Bundle;
-import android.widget.ListView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
-
-public class HomeActivity extends AppCompatActivity {
-
-    ListView item_list;
-    CustomAdapter adapter;
-    public HomeActivity CustomListView = null;
-    public ArrayList<ListModel> CustomListViewValuesArr = new ArrayList<ListModel>();
+public class ProfileUserActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
-    private FirebaseAuth.AuthStateListener authStateListener;
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
-    TextView loading;
-    ProgressBar progressBar;
+
     RelativeLayout relativeLayout;
-    CardView cardView;
+    ProgressBar progressBar;
+    TextView loading;
+    TextView name, sex, age, movies, elements, place, countries, actors, directors, oscar, years, foods, group;
 
-    List<Profile> profileList = new ArrayList<>();
-
-    @SuppressLint("SetTextI18n")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_profile_user);
+
+        Intent showProfile = getIntent();
+        Profile selected_profile = (Profile)showProfile.getSerializableExtra("selectedProfile");
 
         toolbar = findViewById(R.id.app_bar);
-        toolbar.setTitle(R.string.home_title);
+        assert selected_profile != null;
+        toolbar.setTitle(selected_profile.get_name());
         setSupportActionBar(toolbar);
 
-        firebaseAuth = FirebaseAuth.getInstance();
+        final ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        show_navigation_btn(false);
+        firebaseAuth = FirebaseAuth.getInstance();
 
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
 
-        cardView = findViewById(R.id.card_view);
-        progressBar = findViewById(R.id.home_progress_bar);
-        relativeLayout = findViewById(R.id.home_layout);
-        loading = findViewById(R.id.home_loading);
-        item_list = findViewById(R.id.home_list);
+        name = findViewById(R.id.profile_user_name);
+        age = findViewById(R.id.profile_user_age);
+        sex = findViewById(R.id.profile_user_sex);
+        movies = findViewById(R.id.profile_user_movies);
+        elements = findViewById(R.id.profile_user_elem);
+        place = findViewById(R.id.profile_user_place);
+        countries = findViewById(R.id.profile_user_countries);
+        actors = findViewById(R.id.profile_user_actors);
+        directors = findViewById(R.id.profile_user_directors);
+        oscar = findViewById(R.id.profile_user_oscar);
+        years = findViewById(R.id.profile_user_years);
+        foods = findViewById(R.id.profile_user_foods);
+        group = findViewById(R.id.profile_user_group);
+        relativeLayout = findViewById(R.id.profile_user_layout);
+        progressBar = findViewById(R.id.profile_user_progress_bar);
+        loading = findViewById(R.id.profile_user_loading);
+
+        load_data();
+        set_profile(selected_profile);
 
         Menu nav_Menu = navigationView.getMenu();
         nav_Menu.findItem(R.id.nav_login).setVisible(false);
         nav_Menu.findItem(R.id.nav_registration).setVisible(false);
 
-        load_data();
-
-        CustomListView = this;
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent settings = new Intent(HomeActivity.this, OptionActivity.class);
-                Intent log_out = new Intent(HomeActivity.this, MainActivity.class);
-                Intent profile = new Intent(HomeActivity.this, ProfileActivity.class);
-
+                Intent log_out = new Intent(ProfileUserActivity.this, MainActivity.class);
+                Intent home = new Intent(ProfileUserActivity.this, HomeActivity.class);
+                Intent profile = new Intent(ProfileUserActivity.this, ProfileActivity.class);
                 switch (item.getItemId())
                 {
                     case R.id.nav_home:
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
+                        startActivity(home);
                         return true;
                     case R.id.nav_profile:
                         item.setChecked(true);
@@ -128,7 +120,6 @@ public class HomeActivity extends AppCompatActivity {
                     case R.id.nav_settings:
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
-                        startActivity(settings);
                         return true;
                     case R.id.nav_logout:
                         item.setChecked(true);
@@ -147,11 +138,22 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void onItemClick(int mPosition) {
-        Profile selected_profile = profileList.get(mPosition);
-        Intent sendProfile = new Intent(HomeActivity.this, ProfileUserActivity.class);
-        sendProfile.putExtra("selectedProfile", selected_profile);
-        startActivity(sendProfile);
+    @SuppressLint("SetTextI18n")
+    public void set_profile(Profile profile){
+        name.setText(profile.get_name());
+        sex.setText(profile.get_sex());
+        age.setText("Wiek: " + profile.get_age());
+        movies.setText(profile.get_movie1() + ", " + profile.get_movie2() + ", " + profile.get_movie3());
+        elements.setText(profile.get_elem1() + ", " + profile.get_elem2() + ", " + profile.get_elem3());
+        place.setText(profile.get_place());
+        countries.setText(profile.get_country1() + ", " + profile.get_country2() + ", " + profile.get_country3());
+        actors.setText(profile.get_actor1() + ", " + profile.get_actor2() + ", " + profile.get_actor3());
+        directors.setText(profile.get_director1() + ", " + profile.get_director2() + ", " + profile.get_director3());
+        if(profile.get_oscar()) oscar.setText("Tak");
+        else oscar.setText("Nie");
+        years.setText(profile.get_years1() + ", " + profile.get_years2() + ", " + profile.get_years3());
+        foods.setText(profile.get_food1() + ", " + profile.get_food2() + ", " + profile.get_food3());
+        group.setText(profile.get_group());
     }
 
     @Override
@@ -173,14 +175,6 @@ public class HomeActivity extends AppCompatActivity {
         ProfileDetails profileDetails = new ProfileDetails(userID);
         profile_details(profileDetails);
         set_values();
-        load_matched_users();
-    }
-
-    public void show_navigation_btn(boolean state){
-        final ActionBar actionBar = getSupportActionBar();
-        assert actionBar != null;
-        actionBar.setDisplayHomeAsUpEnabled(state);
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
     }
 
     public void set_values (){
@@ -206,75 +200,19 @@ public class HomeActivity extends AppCompatActivity {
                 assert user != null;
                 header.setText(user.get_login());
 
+                progressBar.setVisibility(View.INVISIBLE);
+                relativeLayout.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.INVISIBLE);
+
             }
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie załadowano headera", Toast.LENGTH_LONG).show();
-            }
-        });
 
-    }
-
-    public void load_matched_users (){
-
-        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(LoadMatchedUsersApi.MY_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        LoadMatchedUsersApi loadMatchedUsersApi = retrofit.create(LoadMatchedUsersApi.class);
-
-        Call<List<Profile>> call = loadMatchedUsersApi.loadMatchedUsers();
-
-        call.enqueue(new Callback<List<Profile>>() {
-            @Override
-            public void onResponse(Call<List<Profile>> call, Response<List<Profile>> response) {
-                Log.d("good", "good");
-                Toast.makeText(getApplicationContext(), "załadowano liste", Toast.LENGTH_LONG).show();
-
-                List<Profile> list = response.body();
-                profileList = list;
-                assert list != null;
-                for (int i = 0; i < list.size(); i++) {
-
-                    final ListModel sched = new ListModel();
-
-                    sched.set_name(list.get(i).get_name());
-                    sched.set_age(list.get(i).get_age());
-
-                    CustomListViewValuesArr.add(sched);
-                }
-
-                Resources res = getResources();
-
-                adapter = new CustomAdapter(CustomListView, CustomListViewValuesArr, res);
-                item_list.setAdapter(adapter);
-
-                show_navigation_btn(true);
                 progressBar.setVisibility(View.INVISIBLE);
                 relativeLayout.setVisibility(View.VISIBLE);
                 loading.setVisibility(View.INVISIBLE);
-
-            }
-            @Override
-            public void onFailure(Call<List<Profile>> call, Throwable t) {
-                Log.d("fail", "fail");
-                Toast.makeText(getApplicationContext(), "nie załadowano listy", Toast.LENGTH_LONG).show();
-
-                show_navigation_btn(true);
-                progressBar.setVisibility(View.INVISIBLE);
-                relativeLayout.setVisibility(View.VISIBLE);
-                loading.setVisibility(View.INVISIBLE);
-
-
             }
         });
 
@@ -304,6 +242,4 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }

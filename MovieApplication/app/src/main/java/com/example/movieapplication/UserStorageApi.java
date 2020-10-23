@@ -13,7 +13,7 @@ import retrofit2.http.Part;
 
 public interface UserStorageApi {
 
-    String MY_URL = "http://192.168.0.3:8000";
+    String MY_URL = "http://192.168.43.139:8000";
 
     //@POST("/user/storage/")
     //Call<Uri> putStorage(@Body Uri uri);

@@ -1,6 +1,8 @@
 package com.example.movieapplication;
 
-public class Profile {
+import java.io.Serializable;
+
+public class Profile implements Serializable {
     public String name;
     public int age;
     public String sex;

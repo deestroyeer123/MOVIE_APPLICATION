@@ -19,8 +19,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -64,11 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
     NavigationView navigationView;
     Toolbar toolbar;
 
-    ViewSwitcher viewSwitcher;
-    private static final int VIEV_CONTENT = 0;
-    private static final int VIEW_PROGRESS_BAR_INDEX = 1;
-
-    TextView title_movies, title_elements, title_countries, title_years, title_foods;
+    TextView title_movies, title_elements, title_countries, title_years, title_foods, loading;
     RadioGroup sex, place, oscar, group;
     Spinner spin_actors, spin_actors2, spin_actors3, spin_directors, spin_directors2, spin_directors3;
     EditText pr_name, pr_age;
@@ -81,8 +79,8 @@ public class ProfileActivity extends AppCompatActivity {
     CheckBox r1990, r2000, r2010, r2015, r2019, r2020;
     CheckBox popcorn, nachos, chips, sticks, cookies, nothing;
     Button save, edit;
-
-    //String userID = "";
+    ScrollView scrollView;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -179,7 +177,6 @@ public class ProfileActivity extends AppCompatActivity {
                     ProfileDetails profileDetails = new ProfileDetails(userID);
                     profile_details(profileDetails);
                     create_profile(profile);
-                    startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
                 }
 
             }
@@ -222,6 +219,11 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed(){
+        if(!newUser) super.onBackPressed();
+    }
+
     public void create_profile(Profile profile) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -238,6 +240,7 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(Call<Profile> call, Response<Profile> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "utworzono/zaktualizowano profil", Toast.LENGTH_LONG).show();
+                startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
             }
             @Override
             public void onFailure(Call<Profile> call, Throwable t) {
@@ -329,23 +332,21 @@ public class ProfileActivity extends AppCompatActivity {
                         group_true.setChecked(true);
                     else group_false.setChecked(true);
                     set_disenabled(movie_types, movie_elements, countries, years, foods);
+                    newUser = false;
                 }
+
+                progressBar.setVisibility(View.INVISIBLE);
+                scrollView.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.INVISIBLE);
             }
             @Override
             public void onFailure(Call<Profile> call, Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie ma profilu", Toast.LENGTH_LONG).show();
 
-                if (newUser){
-                    //pr_name.setText("siema");
-                    //Toast.makeText(getApplicationContext(), "siema", Toast.LENGTH_LONG).show();
-                    //
-                    //public void onBackPressed(){
-                    //
-                    //}
-                    //moveTaskToBack(false);
-                    newUser = false;
-                }
+                progressBar.setVisibility(View.INVISIBLE);
+                scrollView.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -384,13 +385,14 @@ public class ProfileActivity extends AppCompatActivity {
 
     public void set_profile_values(final CheckBox[] movie_types, final CheckBox[] movie_elements, final CheckBox[] countries,
                                    final CheckBox[] years, final CheckBox[] foods){
-        viewSwitcher.setDisplayedChild(VIEW_PROGRESS_BAR_INDEX);
+        progressBar.setVisibility(View.VISIBLE);
+        scrollView.setVisibility(View.INVISIBLE);
+        loading.setVisibility(View.VISIBLE);
         String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
         ProfileDetails profileDetails = new ProfileDetails(userID);
         profile_details(profileDetails);
         load_profile(movie_types, movie_elements, countries, years, foods);
         set_values();
-        viewSwitcher.setDisplayedChild(VIEV_CONTENT);
     }
 
     @Override
@@ -643,7 +645,9 @@ public class ProfileActivity extends AppCompatActivity {
        drawerLayout = findViewById(R.id.drawer_layout);
        navigationView = findViewById(R.id.navigation_view);
 
-       viewSwitcher = findViewById(R.id.VSwitcher);
+       loading = findViewById(R.id.profile_loading);
+       progressBar = findViewById(R.id.progress_bar);
+       scrollView = findViewById(R.id.scroll_view);
        title_countries = findViewById(R.id.profile_title_country);
        title_elements = findViewById(R.id.profile_title_important);
        title_foods = findViewById(R.id.profile_title_food);

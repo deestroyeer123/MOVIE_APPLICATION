@@ -1,5 +1,8 @@
 from django.db import models
 
+class Groups(models.Model):
+    knn = models.IntegerField()
+    kmeans = models.IntegerField()
 class UserStorage(models.Model):
     img = models.ImageField(upload_to = '', default = 'none/no-img.jpg')
 

@@ -5,8 +5,8 @@ from rest_framework.generics import UpdateAPIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
 from django.http import Http404
-from .models import Profile, ProfileDetails, User
-from .serializers import ProfileSerializer, ProfileDetailsSerializer, UserSerializer
+from .models import Profile, ProfileDetails, User, Groups
+from .serializers import ProfileSerializer, ProfileDetailsSerializer, UserSerializer, GroupsSerializer
 from .my_database import DatabaseHelper
 from .knn import Knn
 
@@ -92,37 +92,25 @@ class profileView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class getMatchedUsers(APIView):
+    def get(self, request):
+        listProfiles = []
+        users = Knn.setGroup()
+        for x in users:
+            profile = DatabaseHelper.getProfile(x)
+            listProfiles.append(profile)
+        return Response(listProfiles)
+    def post(self):
+        pass
+
 def initializeBase(request):
     DatabaseHelper.removeBase()
     DatabaseHelper.initialize()
     return render(request, 'movie_app/cos.html')
     
 
-def cos(request):
-    userID = "b2L4GxxryBfD35Le5wKG72LgCEz2"
-    #DatabaseHelper.getProfile()
-    #profile_json = json.dumps(profile)
-    #print(profile)
-    
-    #DatabaseHelper.removeBase()
-    #DatabaseHelper.initialize()
-    Knn.cos()
-    #DatabaseHelper.getBase("Actors")
-    #DatabaseHelper.getUserDetails(userID)
-    return render(request, 'movie_app/cos.html')  
-
-
-
-
-""" class profileUpdate(UpdateAPIView):
-
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer
-    lookup_field = 'uid'
-
-class profileCreate(CreateAPIView):
-    
-    queryset = Profile.objects.all()
-    serializer_class = ProfileSerializer """
+def learnModel(request):
+    #Knn.learn()
+    return render(request, 'movie_app/cos.html')
 
     

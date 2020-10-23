@@ -1,14 +1,15 @@
 package com.example.movieapplication;
 
-import okhttp3.RequestBody;
+import java.util.List;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
-public interface InitializeBaseApi {
+public interface LoadMatchedUsersApi {
 
     String MY_URL = "http://192.168.43.139:8000";
 
-    @GET("/profile/base/")
-    Call<ResponseBody> initialize();
+    @GET("/matched/")
+    Call<List<Profile>> loadMatchedUsers();
 }
