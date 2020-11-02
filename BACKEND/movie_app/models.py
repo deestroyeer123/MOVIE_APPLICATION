@@ -4,7 +4,7 @@ class Groups(models.Model):
     knn = models.IntegerField()
     kmeans = models.IntegerField()
 class UserStorage(models.Model):
-    img = models.ImageField(upload_to = '', default = 'none/no-img.jpg')
+    img = models.ImageField(upload_to="media/images/")
 
 class User(models.Model):
     login = models.CharField(max_length=100)

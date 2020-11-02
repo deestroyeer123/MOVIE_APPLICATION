@@ -15,12 +15,22 @@ class Knn():
     def preprocessData(df, list, col):
         df[col] = df[col].apply(lambda x: list.index(df[col][df[col].tolist().index(x)]))
 
+    def createStr(ind1, ind2, ind3, length):
+        str = ""
+        for x in range(length):
+            if (x == ind1 or x == ind2 or x == ind3):
+                str += "1"
+            else:
+                str += "0"
+        return str
+
     def learn():
         cols = [field.name for field in Profile._meta.get_fields()]
         cols = cols[2:]
         cols.sort()
         data = DatabaseHelper.getProfiles()[0::2]
         users = DatabaseHelper.getProfiles()[1::2]
+
         df = pd.DataFrame(data, columns=cols)
         pd.set_option('display.max_rows', None, 'display.max_columns', None)
         
@@ -48,6 +58,30 @@ class Knn():
 
         print(df)
         
+
+        #1 hot encoding
+        
+        oldCols = ["actor", "country", "director", "elem", "food", "movie", "years"]
+        newCols = ["actors", "countries", "directors", "elements", "foods", "movies", "years"]
+        newBase = [base[0], base[1], base[2], base[3], base[4], base[6], base[9]]
+        newList = []
+        newDf = []
+        for y in range(len(newCols)): 
+            for x in range(len(df[oldCols[y] + "1"])):
+                str = Knn.createStr(df[oldCols[y] + "1"][x], df[oldCols[y] + "2"][x], df[oldCols[y] + "3"][x], len(newBase[y]))
+                newList.append(str)
+            df2 = pd.DataFrame(newList, columns=[newCols[y]])
+            newList = []
+            newDf.append(df2[newCols[y]])
+        
+        df = df.assign(actors=newDf[0], countries=newDf[1], directors=newDf[2], elements=newDf[3], 
+        foods=newDf[4], movies=newDf[5], years=newDf[6])
+
+        for x in oldCols:
+            del df[x + "1"], df[x + "2"], df[x + "3"]
+
+        print(df)
+
         rows = sizeDf/columns
         rowsLim = int(rows/3*2)
         
@@ -117,6 +151,31 @@ class Knn():
                     y += 1
 
             print(df)
+
+
+            #1 hot encoding
+        
+            oldCols = ["actor", "country", "director", "elem", "food", "movie", "years"]
+            newCols = ["actors", "countries", "directors", "elements", "foods", "movies", "years"]
+            newBase = [base[0], base[1], base[2], base[3], base[4], base[6], base[9]]
+            newList = []
+            newDf = []
+            for y in range(len(newCols)): 
+                for x in range(len(df[oldCols[y] + "1"])):
+                    str = Knn.createStr(df[oldCols[y] + "1"][x], df[oldCols[y] + "2"][x], df[oldCols[y] + "3"][x], len(newBase[y]))
+                    newList.append(str)
+                df2 = pd.DataFrame(newList, columns=[newCols[y]])
+                newList = []
+                newDf.append(df2[newCols[y]])
+            
+            df = df.assign(actors=newDf[0], countries=newDf[1], directors=newDf[2], elements=newDf[3], 
+            foods=newDf[4], movies=newDf[5], years=newDf[6])
+
+            for x in oldCols:
+                del df[x + "1"], df[x + "2"], df[x + "3"]
+
+            print(df)
+
 
             X = df
             y_kmeans = kmeans_model.predict(X)

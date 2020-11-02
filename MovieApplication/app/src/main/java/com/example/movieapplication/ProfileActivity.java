@@ -7,11 +7,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -28,25 +28,18 @@ import android.widget.TextView;
 
 import android.util.Log;
 import android.widget.Toast;
-import android.widget.ViewSwitcher;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -54,8 +47,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.movieapplication.RegisterActivity.newUser;
-import static com.example.movieapplication.RegisterActivity.users;
-
+import static com.example.movieapplication.MainActivity.MY_URL;
+import static com.example.movieapplication.MainActivity.IMG;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -100,6 +93,10 @@ public class ProfileActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
         initialize();
+
+        View nav_header_title = navigationView.getHeaderView(0);
+        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+        header_title.setText(R.string.app_name);
 
         final CheckBox[] movie_types = {action_film, comedy, drama, fantasy, horror, disaster_film, adv_film, scifi, thriller,
                 western, war_film, romantic, animated, biographical, documentary};
@@ -227,7 +224,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void create_profile(Profile profile) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(NewProfileApi.MY_URL)
+                .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -237,13 +234,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<Profile>() {
             @Override
-            public void onResponse(Call<Profile> call, Response<Profile> response) {
+            public void onResponse(@NonNull Call<Profile> call, @NonNull Response<Profile> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "utworzono/zaktualizowano profil", Toast.LENGTH_LONG).show();
                 startActivity(new Intent(ProfileActivity.this, HomeActivity.class));
             }
             @Override
-            public void onFailure(Call<Profile> call, Throwable t) {
+            public void onFailure(@NonNull Call<Profile> call, @NonNull Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie udało się utworzyć/zaktualizować profilu", Toast.LENGTH_LONG).show();
             }
@@ -253,7 +250,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void profile_details(ProfileDetails profileDetails) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ProfileDetailsApi.MY_URL)
+                .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -263,12 +260,12 @@ public class ProfileActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<ProfileDetails>() {
             @Override
-            public void onResponse(Call<ProfileDetails> call, Response<ProfileDetails> response) {
+            public void onResponse(@NonNull Call<ProfileDetails> call, @NonNull Response<ProfileDetails> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "przesłano uid", Toast.LENGTH_LONG).show();
             }
             @Override
-            public void onFailure(Call<ProfileDetails> call, Throwable t) {
+            public void onFailure(@NonNull Call<ProfileDetails> call, @NonNull Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie udało się przesłać uid", Toast.LENGTH_LONG).show();
             }
@@ -279,7 +276,7 @@ public class ProfileActivity extends AppCompatActivity {
                              final CheckBox[] years, final CheckBox[] foods) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(LoadProfileApi.MY_URL)
+                .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -289,7 +286,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<Profile>() {
             @Override
-            public void onResponse(Call<Profile> call, Response<Profile> response) {
+            public void onResponse(@NonNull Call<Profile> call, @NonNull Response<Profile> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "załadowano dane", Toast.LENGTH_LONG).show();
 
@@ -340,7 +337,7 @@ public class ProfileActivity extends AppCompatActivity {
                 loading.setVisibility(View.INVISIBLE);
             }
             @Override
-            public void onFailure(Call<Profile> call, Throwable t) {
+            public void onFailure(@NonNull Call<Profile> call, @NonNull Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie ma profilu", Toast.LENGTH_LONG).show();
 
@@ -409,7 +406,7 @@ public class ProfileActivity extends AppCompatActivity {
     public void set_values (){
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(LoadUserApi.MY_URL)
+                .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -418,8 +415,9 @@ public class ProfileActivity extends AppCompatActivity {
         Call<User> call = loadUserApi.loadUserDetails();
 
         call.enqueue(new Callback<User>() {
+            @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "załadowano header", Toast.LENGTH_LONG).show();
 
@@ -427,11 +425,16 @@ public class ProfileActivity extends AppCompatActivity {
                 View nav_header = navigationView.getHeaderView(0);
                 TextView header = nav_header.findViewById(R.id.nav_header);
                 assert user != null;
-                header.setText(user.get_login());
+                header.setText("Witaj " + user.get_login() + "!");
+                if(IMG != null) {
+                    View img_header = navigationView.getHeaderView(0);
+                    ImageView header_img = img_header.findViewById(R.id.header_img);
+                    header_img.setImageBitmap(IMG);
+                }
 
             }
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie załadowano headera", Toast.LENGTH_LONG).show();
             }

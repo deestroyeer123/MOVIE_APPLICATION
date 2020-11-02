@@ -54,91 +54,61 @@
                 android:visibility="visible"
                 android:padding="20dp">
 
-                <TableRow
-                    android:layout_marginBottom="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Pink"
+                        android:text="@string/log_login"
+                        android:textSize="13sp" />
 
-                    <EditText
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/Pink"
+                        android:layout_marginBottom="10dp" />
+
+                    <TextView
                         android:id="@+id/opt_login"
-                        android:layout_weight="1"
-                        android:padding="5dp"
-                        android:background="@drawable/custom_field"
-                        android:textColorHint="@color/Silver"
+                        android:drawablePadding="5dp"
+                        android:drawableStart="@drawable/ic_action_login_roz"
                         android:textColor="@color/White"
+                        android:fontFamily="sans-serif-light"
+                        android:textSize="18sp"
+                        android:layout_marginBottom="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:inputType="textPersonName"
-                        android:importantForAutofill="no"
-                        tools:ignore="LabelFor" />
+                        android:layout_height="wrap_content" />
 
-                </TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/Pink"
+                        android:text="@string/log_email"
+                        android:textSize="13sp" />
 
-                <TableRow
-                    android:layout_marginBottom="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/Pink"
+                        android:layout_marginBottom="10dp" />
 
-                    <EditText
+                    <TextView
                         android:id="@+id/opt_email"
-                        android:layout_weight="1"
-                        android:padding="5dp"
-                        android:background="@drawable/custom_field"
-                        android:textColorHint="@color/Silver"
+                        android:drawablePadding="5dp"
+                        android:drawableStart="@drawable/ic_action_email_roz"
                         android:textColor="@color/White"
+                        android:fontFamily="sans-serif-light"
+                        android:textSize="18sp"
+                        android:layout_marginBottom="25dp"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:inputType="textEmailAddress"
-                        android:importantForAutofill="no"
-                        tools:ignore="LabelFor" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="200dp"
-                    tools:ignore="RtlSymmetry">
-
-                    <Button
-                        android:id="@+id/op_edit_btn"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="5dp"
-                        android:background="@drawable/custom_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/op_edit_btn"
-                        tools:ignore="ButtonStyle" />
-
-                    <Button
-                        android:id="@+id/op_save_btn"
-                        android:layout_weight="1"
-                        android:layout_marginStart="5dp"
-                        android:background="@drawable/custom_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/op_save_btn"
-                        tools:ignore="ButtonStyle" />
-
-                </TableRow>
-
-                <TableRow
-                    android:layout_marginBottom="15dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                        android:layout_height="wrap_content" />
 
                     <Button
                         android:id="@+id/op_photo_btn"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="5dp"
                         android:background="@drawable/custom_button"
-                        android:layout_width="wrap_content"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="@string/op_photo_btn"
                         tools:ignore="ButtonStyle" />
-
-                </TableRow>
 
 
             </LinearLayout>

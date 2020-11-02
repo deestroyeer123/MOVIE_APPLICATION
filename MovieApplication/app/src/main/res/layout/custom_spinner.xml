@@ -10,4 +10,4 @@
     android:textColor="@android:color/white"
     android:background="@drawable/abc_spinner_mtrl_am_alpha"
     android:backgroundTint="@android:color/white"
-    tools:ignore="PrivateResource" />
+    tools:ignore="PrivateResource,UnusedAttribute" />

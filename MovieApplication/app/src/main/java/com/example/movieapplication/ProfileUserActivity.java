@@ -14,10 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,18 +23,17 @@ import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.io.File;
 import java.util.Objects;
 
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.movieapplication.MainActivity.MY_URL;
+import static com.example.movieapplication.MainActivity.IMG;
+import static com.example.movieapplication.HomeActivity.bitmapsImages;
 
 public class ProfileUserActivity extends AppCompatActivity {
 
@@ -47,10 +43,12 @@ public class ProfileUserActivity extends AppCompatActivity {
     NavigationView navigationView;
     Toolbar toolbar;
 
+    ImageView profile_user_img;
     RelativeLayout relativeLayout;
     ProgressBar progressBar;
     TextView loading;
-    TextView name, sex, age, movies, elements, place, countries, actors, directors, oscar, years, foods, group;
+    TextView name, sex, age, movie1, movie2, movie3, elem1, elem2, elem3, place, country1, country2, country3,
+            actor1, actor2, actor3, director1, director2, director3, oscar, years1, years2, years3, food1, food2, food3, group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +56,9 @@ public class ProfileUserActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile_user);
 
         Intent showProfile = getIntent();
-        Profile selected_profile = (Profile)showProfile.getSerializableExtra("selectedProfile");
+        ImageProfile selected_profile = (ImageProfile) showProfile.getSerializableExtra("selectedProfile");
+        Intent getPosition = getIntent();
+        int position = getPosition.getIntExtra("position", 0);
 
         toolbar = findViewById(R.id.app_bar);
         assert selected_profile != null;
@@ -75,25 +75,45 @@ public class ProfileUserActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
 
+        View nav_header_title = navigationView.getHeaderView(0);
+        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+        header_title.setText(R.string.app_name);
+
+        profile_user_img = findViewById(R.id.profile_user_img);
         name = findViewById(R.id.profile_user_name);
         age = findViewById(R.id.profile_user_age);
         sex = findViewById(R.id.profile_user_sex);
-        movies = findViewById(R.id.profile_user_movies);
-        elements = findViewById(R.id.profile_user_elem);
+        movie1 = findViewById(R.id.profile_user_movie1);
+        movie2 = findViewById(R.id.profile_user_movie2);
+        movie3 = findViewById(R.id.profile_user_movie3);
+        elem1 = findViewById(R.id.profile_user_elem1);
+        elem2 = findViewById(R.id.profile_user_elem2);
+        elem3 = findViewById(R.id.profile_user_elem3);
         place = findViewById(R.id.profile_user_place);
-        countries = findViewById(R.id.profile_user_countries);
-        actors = findViewById(R.id.profile_user_actors);
-        directors = findViewById(R.id.profile_user_directors);
+        country1 = findViewById(R.id.profile_user_country1);
+        country2 = findViewById(R.id.profile_user_country2);
+        country3 = findViewById(R.id.profile_user_country3);
+        actor1 = findViewById(R.id.profile_user_actor1);
+        actor2 = findViewById(R.id.profile_user_actor2);
+        actor3 = findViewById(R.id.profile_user_actor3);
+        director1 = findViewById(R.id.profile_user_director1);
+        director2 = findViewById(R.id.profile_user_director2);
+        director3 = findViewById(R.id.profile_user_director3);
         oscar = findViewById(R.id.profile_user_oscar);
-        years = findViewById(R.id.profile_user_years);
-        foods = findViewById(R.id.profile_user_foods);
+        years1 = findViewById(R.id.profile_user_years1);
+        years2 = findViewById(R.id.profile_user_years2);
+        years3 = findViewById(R.id.profile_user_years3);
+        food1 = findViewById(R.id.profile_user_food1);
+        food2 = findViewById(R.id.profile_user_food2);
+        food3 = findViewById(R.id.profile_user_food3);
         group = findViewById(R.id.profile_user_group);
         relativeLayout = findViewById(R.id.profile_user_layout);
         progressBar = findViewById(R.id.profile_user_progress_bar);
         loading = findViewById(R.id.profile_user_loading);
 
         load_data();
-        set_profile(selected_profile);
+        set_profile(selected_profile, position);
+        //profile_user_img.setImageBitmap(IMG);
 
         Menu nav_Menu = navigationView.getMenu();
         nav_Menu.findItem(R.id.nav_login).setVisible(false);
@@ -105,6 +125,7 @@ public class ProfileUserActivity extends AppCompatActivity {
                 Intent log_out = new Intent(ProfileUserActivity.this, MainActivity.class);
                 Intent home = new Intent(ProfileUserActivity.this, HomeActivity.class);
                 Intent profile = new Intent(ProfileUserActivity.this, ProfileActivity.class);
+                Intent settings = new Intent(ProfileUserActivity.this, OptionActivity.class);
                 switch (item.getItemId())
                 {
                     case R.id.nav_home:
@@ -120,6 +141,7 @@ public class ProfileUserActivity extends AppCompatActivity {
                     case R.id.nav_settings:
                         item.setChecked(true);
                         drawerLayout.closeDrawers();
+                        startActivity(settings);
                         return true;
                     case R.id.nav_logout:
                         item.setChecked(true);
@@ -139,20 +161,37 @@ public class ProfileUserActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    public void set_profile(Profile profile){
+    public void set_profile(ImageProfile profile, int position){
+        if(bitmapsImages.get(position) != null) {
+            profile_user_img.setImageBitmap(bitmapsImages.get(position));
+        }
         name.setText(profile.get_name());
         sex.setText(profile.get_sex());
         age.setText("Wiek: " + profile.get_age());
-        movies.setText(profile.get_movie1() + ", " + profile.get_movie2() + ", " + profile.get_movie3());
-        elements.setText(profile.get_elem1() + ", " + profile.get_elem2() + ", " + profile.get_elem3());
+        movie1.setText(profile.get_movie1());
+        movie2.setText(profile.get_movie2());
+        movie3.setText(profile.get_movie3());
+        elem1.setText(profile.get_elem1());
+        elem2.setText(profile.get_elem2());
+        elem3.setText(profile.get_elem3());
         place.setText(profile.get_place());
-        countries.setText(profile.get_country1() + ", " + profile.get_country2() + ", " + profile.get_country3());
-        actors.setText(profile.get_actor1() + ", " + profile.get_actor2() + ", " + profile.get_actor3());
-        directors.setText(profile.get_director1() + ", " + profile.get_director2() + ", " + profile.get_director3());
+        country1.setText(profile.get_country1());
+        country2.setText(profile.get_country2());
+        country3.setText(profile.get_country3());
+        actor1.setText(profile.get_actor1());
+        actor2.setText(profile.get_actor2());
+        actor3.setText(profile.get_actor3());
+        director1.setText(profile.get_director1());
+        director2.setText(profile.get_director2());
+        director3.setText(profile.get_director3());
         if(profile.get_oscar()) oscar.setText("Tak");
         else oscar.setText("Nie");
-        years.setText(profile.get_years1() + ", " + profile.get_years2() + ", " + profile.get_years3());
-        foods.setText(profile.get_food1() + ", " + profile.get_food2() + ", " + profile.get_food3());
+        years1.setText(profile.get_years1());
+        years2.setText(profile.get_years2());
+        years3.setText(profile.get_years3());
+        food1.setText(profile.get_food1());
+        food2.setText(profile.get_food2());
+        food3.setText(profile.get_food3());
         group.setText(profile.get_group());
     }
 
@@ -180,7 +219,7 @@ public class ProfileUserActivity extends AppCompatActivity {
     public void set_values (){
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(LoadUserApi.MY_URL)
+                .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -189,8 +228,9 @@ public class ProfileUserActivity extends AppCompatActivity {
         Call<User> call = loadUserApi.loadUserDetails();
 
         call.enqueue(new Callback<User>() {
+            @SuppressLint("SetTextI18n")
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "załadowano header", Toast.LENGTH_LONG).show();
 
@@ -198,7 +238,12 @@ public class ProfileUserActivity extends AppCompatActivity {
                 View nav_header = navigationView.getHeaderView(0);
                 TextView header = nav_header.findViewById(R.id.nav_header);
                 assert user != null;
-                header.setText(user.get_login());
+                header.setText("Witaj " + user.get_login() + "!");
+                if(IMG != null) {
+                    View img_header = navigationView.getHeaderView(0);
+                    ImageView header_img = img_header.findViewById(R.id.header_img);
+                    header_img.setImageBitmap(IMG);
+                }
 
                 progressBar.setVisibility(View.INVISIBLE);
                 relativeLayout.setVisibility(View.VISIBLE);
@@ -206,7 +251,7 @@ public class ProfileUserActivity extends AppCompatActivity {
 
             }
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie załadowano headera", Toast.LENGTH_LONG).show();
 
@@ -221,7 +266,7 @@ public class ProfileUserActivity extends AppCompatActivity {
     public void profile_details(ProfileDetails profileDetails) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ProfileDetailsApi.MY_URL)
+                .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -231,12 +276,12 @@ public class ProfileUserActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<ProfileDetails>() {
             @Override
-            public void onResponse(Call<ProfileDetails> call, Response<ProfileDetails> response) {
+            public void onResponse(@NonNull Call<ProfileDetails> call, @NonNull Response<ProfileDetails> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "przesłano uid", Toast.LENGTH_LONG).show();
             }
             @Override
-            public void onFailure(Call<ProfileDetails> call, Throwable t) {
+            public void onFailure(@NonNull Call<ProfileDetails> call, @NonNull Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie udało się przesłać uid", Toast.LENGTH_LONG).show();
             }

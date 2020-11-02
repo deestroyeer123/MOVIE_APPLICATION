@@ -1,8 +1,10 @@
 package com.example.movieapplication;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+
 // Adapter class inherits from BaseAdapter and implements OnClickListener
 public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
 
@@ -22,7 +25,6 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
     private static LayoutInflater inflater = null;
     public Resources res;
     ListModel tempValues = null;
-    int i = 0;
 
     // CustomAdapter Constructor
     public CustomAdapter(Activity a, ArrayList d, Resources resLocal) {
@@ -58,12 +60,13 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
     // Create a holder Class to contain inflated xml file elements
     public static class ViewHolder {
 
-        public TextView item_name;
-        public TextView item_age;
-
+        TextView item_name;
+        TextView item_age;
+        ImageView item_img;
     }
 
     // Depends upon data size called for each row , Create each ListView row
+    @SuppressLint({"InflateParams", "SetTextI18n"})
     public View getView(int position, View convertView, ViewGroup parent) {
 
         View vi = convertView;
@@ -79,6 +82,7 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
             holder = new ViewHolder();
             holder.item_name = vi.findViewById(R.id.item_name);
             holder.item_age = vi.findViewById(R.id.item_age);
+            holder.item_img = vi.findViewById(R.id.image);
 
 // Set holder with LayoutInflater
             vi.setTag(holder);
@@ -96,6 +100,7 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
 // Set Model values in Holder elements
             holder.item_name.setText(tempValues.get_name());
             holder.item_age.setText(String.valueOf(tempValues.get_age()));
+            holder.item_img.setImageBitmap(tempValues.get_img());
 
 // Set Item Click Listner for LayoutInflater for each row
             vi.setOnClickListener(new OnItemClickListener(position));

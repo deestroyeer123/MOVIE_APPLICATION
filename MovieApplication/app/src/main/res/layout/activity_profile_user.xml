@@ -81,7 +81,7 @@
                                         android:layout_height="wrap_content"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
-                                        android:layout_marginTop="10dp"
+                                        android:layout_marginTop="5dp"
                                         android:layout_marginBottom="10dp"
                                         android:textStyle="bold"
                                         android:textSize="25sp"/>
@@ -113,15 +113,24 @@
                                 android:layout_height="match_parent"
                                 android:orientation="vertical">
 
-                                <ImageView
-                                    android:id="@+id/profile_user_img"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:padding="3dp"
-                                    android:layout_gravity="center"
-                                    android:background="@drawable/circle"
-                                    android:src="@drawable/ic_user"
-                                    android:adjustViewBounds="true"/>
+                                <androidx.cardview.widget.CardView
+                                    android:id="@+id/myCardView"
+                                    android:layout_width="124dp"
+                                    android:layout_height="124dp"
+                                    app:cardCornerRadius="62dp"
+                                    android:layout_marginTop="5dp"
+                                    android:layout_gravity="center|end">
+
+                                    <ImageView
+                                        android:id="@+id/profile_user_img"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:background="@drawable/circle"
+                                        android:src="@drawable/ic_user"
+                                        android:scaleType="centerCrop"
+                                        tools:ignore="ContentDescription" />
+
+                                </androidx.cardview.widget.CardView>
 
                             </LinearLayout>
 
@@ -149,22 +158,46 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textColor="@color/Pink"
                                         android:text="@string/profile_user_movies"
                                         android:textSize="13sp" />
 
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:layout_height="1dp"
+                                        android:background="@color/Pink"
+                                        android:layout_marginBottom="10dp" />
+
                                     <TextView
-                                        android:id="@+id/profile_user_movies"
+                                        android:id="@+id/profile_user_movie1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_movie"
+                                        android:drawablePadding="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
                                         android:textSize="18sp" />
 
-                                    <View
-                                        android:layout_width="match_parent"
-                                        android:layout_height="1dp"
-                                        android:background="@color/White"
-                                        android:layout_marginTop="10dp" />
+                                    <TextView
+                                        android:id="@+id/profile_user_movie2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_movie"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
+
+                                    <TextView
+                                        android:id="@+id/profile_user_movie3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_movie"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
+
 
                                 </LinearLayout>
 
@@ -177,22 +210,46 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textColor="@color/Pink"
                                         android:text="@string/profile_user_elem"
                                         android:textSize="13sp" />
 
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:background="@color/Pink"
+                                        android:layout_height="1dp"
+                                        android:layout_marginBottom="10dp" />
+
                                     <TextView
-                                        android:id="@+id/profile_user_elem"
+                                        android:id="@+id/profile_user_elem1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_elem"
+                                        android:drawablePadding="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
                                         android:textSize="18sp" />
 
-                                    <View
-                                        android:layout_width="match_parent"
-                                        android:background="@color/White"
-                                        android:layout_height="1dp"
-                                        android:layout_marginTop="10dp" />
+                                    <TextView
+                                        android:id="@+id/profile_user_elem2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_elem"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
+
+                                    <TextView
+                                        android:id="@+id/profile_user_elem3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_elem"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
+
 
                                 </LinearLayout>
 
@@ -205,22 +262,26 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textColor="@color/Pink"
                                         android:text="@string/profile_user_place"
                                         android:textSize="13sp" />
+
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:background="@color/Pink"
+                                        android:layout_height="1dp"
+                                        android:layout_marginBottom="10dp" />
 
                                     <TextView
                                         android:id="@+id/profile_user_place"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_place"
+                                        android:drawablePadding="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
                                         android:textSize="18sp" />
 
-                                    <View
-                                        android:layout_width="match_parent"
-                                        android:background="@color/White"
-                                        android:layout_height="1dp"
-                                        android:layout_marginTop="10dp" />
 
                                 </LinearLayout>
 
@@ -233,22 +294,45 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textColor="@color/Pink"
                                         android:text="@string/profile_user_countries"
                                         android:textSize="13sp" />
 
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:background="@color/Pink"
+                                        android:layout_height="1dp"
+                                        android:layout_marginBottom="10dp" />
+
                                     <TextView
-                                        android:id="@+id/profile_user_countries"
+                                        android:id="@+id/profile_user_country1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_countries"
+                                        android:drawablePadding="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
                                         android:textSize="18sp" />
 
-                                    <View
-                                        android:layout_width="match_parent"
-                                        android:background="@color/White"
-                                        android:layout_height="1dp"
-                                        android:layout_marginTop="10dp" />
+                                    <TextView
+                                        android:id="@+id/profile_user_country2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_countries"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
+
+                                    <TextView
+                                        android:id="@+id/profile_user_country3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_countries"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
 
                                 </LinearLayout>
 
@@ -261,22 +345,45 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textColor="@color/Pink"
                                         android:text="@string/profile_user_actors"
                                         android:textSize="13sp" />
 
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:background="@color/Pink"
+                                        android:layout_height="1dp"
+                                        android:layout_marginBottom="10dp" />
+
                                     <TextView
-                                        android:id="@+id/profile_user_actors"
+                                        android:id="@+id/profile_user_actor1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_actors"
+                                        android:drawablePadding="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
                                         android:textSize="18sp" />
 
-                                    <View
-                                        android:layout_width="match_parent"
-                                        android:background="@color/White"
-                                        android:layout_height="1dp"
-                                        android:layout_marginTop="10dp" />
+                                    <TextView
+                                        android:id="@+id/profile_user_actor2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_actors"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
+
+                                    <TextView
+                                        android:id="@+id/profile_user_actor3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_actors"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
 
                                 </LinearLayout>
 
@@ -289,22 +396,45 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textColor="@color/Pink"
                                         android:text="@string/profile_user_directors"
                                         android:textSize="13sp" />
 
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:background="@color/Pink"
+                                        android:layout_height="1dp"
+                                        android:layout_marginBottom="10dp" />
+
                                     <TextView
-                                        android:id="@+id/profile_user_directors"
+                                        android:id="@+id/profile_user_director1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_directors"
+                                        android:drawablePadding="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
                                         android:textSize="18sp" />
 
-                                    <View
-                                        android:layout_width="match_parent"
-                                        android:background="@color/White"
-                                        android:layout_height="1dp"
-                                        android:layout_marginTop="10dp" />
+                                    <TextView
+                                        android:id="@+id/profile_user_director2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_directors"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
+
+                                    <TextView
+                                        android:id="@+id/profile_user_director3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_directors"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
 
                                 </LinearLayout>
 
@@ -317,22 +447,25 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textColor="@color/Pink"
                                         android:text="@string/profile_user_oscar"
                                         android:textSize="13sp" />
+
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:background="@color/Pink"
+                                        android:layout_height="1dp"
+                                        android:layout_marginBottom="10dp" />
 
                                     <TextView
                                         android:id="@+id/profile_user_oscar"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_star"
+                                        android:drawablePadding="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
                                         android:textSize="18sp" />
-
-                                    <View
-                                        android:layout_width="match_parent"
-                                        android:background="@color/White"
-                                        android:layout_height="1dp"
-                                        android:layout_marginTop="10dp" />
 
                                 </LinearLayout>
 
@@ -345,22 +478,45 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textColor="@color/Pink"
                                         android:text="@string/profile_user_years"
                                         android:textSize="13sp" />
 
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:background="@color/Pink"
+                                        android:layout_height="1dp"
+                                        android:layout_marginBottom="10dp" />
+
                                     <TextView
-                                        android:id="@+id/profile_user_years"
+                                        android:id="@+id/profile_user_years1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_years"
+                                        android:drawablePadding="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
                                         android:textSize="18sp" />
 
-                                    <View
-                                        android:layout_width="match_parent"
-                                        android:background="@color/White"
-                                        android:layout_height="1dp"
-                                        android:layout_marginTop="10dp" />
+                                    <TextView
+                                        android:id="@+id/profile_user_years2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_years"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
+
+                                    <TextView
+                                        android:id="@+id/profile_user_years3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_years"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
 
                                 </LinearLayout>
 
@@ -373,22 +529,45 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textColor="@color/Pink"
                                         android:text="@string/profile_user_foods"
                                         android:textSize="13sp" />
 
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:background="@color/Pink"
+                                        android:layout_height="1dp"
+                                        android:layout_marginBottom="10dp" />
+
                                     <TextView
-                                        android:id="@+id/profile_user_foods"
+                                        android:id="@+id/profile_user_food1"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_food"
+                                        android:drawablePadding="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
                                         android:textSize="18sp" />
 
-                                    <View
-                                        android:layout_width="match_parent"
-                                        android:background="@color/White"
-                                        android:layout_height="1dp"
-                                        android:layout_marginTop="10dp" />
+                                    <TextView
+                                        android:id="@+id/profile_user_food2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_food"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
+
+                                    <TextView
+                                        android:id="@+id/profile_user_food3"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_food"
+                                        android:drawablePadding="5dp"
+                                        android:fontFamily="sans-serif-light"
+                                        android:textColor="@color/White"
+                                        android:textSize="18sp" />
 
                                 </LinearLayout>
 
@@ -401,22 +580,25 @@
                                     <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:textColor="@color/Pink"
                                         android:text="@string/profile_user_group"
                                         android:textSize="13sp" />
+
+                                    <View
+                                        android:layout_width="match_parent"
+                                        android:background="@color/Pink"
+                                        android:layout_height="1dp"
+                                        android:layout_marginBottom="10dp" />
 
                                     <TextView
                                         android:id="@+id/profile_user_group"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
+                                        android:drawableStart="@drawable/ic_group"
+                                        android:drawablePadding="5dp"
                                         android:fontFamily="sans-serif-light"
                                         android:textColor="@color/White"
                                         android:textSize="18sp" />
-
-                                    <View
-                                        android:layout_width="match_parent"
-                                        android:background="@color/White"
-                                        android:layout_height="1dp"
-                                        android:layout_marginTop="10dp" />
 
                                 </LinearLayout>
 

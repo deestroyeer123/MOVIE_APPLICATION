@@ -4,15 +4,16 @@ from .serializers import ProfileSerializer
 import json
 
 config = {
-  "apiKey": "apiKey",
-  "authDomain": "projectId.firebaseapp.com",
+  "apiKey": "AIzaSyC0kIXsozFH-rYjO2uFNG_KEWsgYBufsWI",
+  "authDomain": "movieapplication-248de.firebaseapp.com",
   "databaseURL": "https://movieapplication-248de.firebaseio.com",
-  "storageBucket": "projectId.appspot.com",
+  "storageBucket": "movieapplication-248de.appspot.com",
   "serviceAccount": "movie_app/firebase_sdk.json"
 }
 
 firebase = pyrebase.initialize_app(config)
 db = firebase.database()
+storage = firebase.storage()
 
 class DatabaseHelper():
 
@@ -61,10 +62,12 @@ class DatabaseHelper():
         user = db.child("Users").child(userID).get()
         return user.val()
 
-    def putImg(userID, val):
-        #storage = firebase.storage()
-        #storage.child("Users").child(userID).child("images").put(img)
-        db.child("Images").child(userID).set(val)
+    def putImg(userID, img):
+        db.child("Images").child(userID).set(img)
+
+    def updateImg(userID, img):
+        db.child("Images").child(userID).remove()
+        db.child("Images").child(userID).set(img)
 
     def initialize():
         files = ["actors", "countries", "directors", "elements", "foods", "groups", "movies", "places", "sexes", "years"]
@@ -131,3 +134,13 @@ class DatabaseHelper():
                 if x == userID:
                     return True
             return False
+
+    def getImg(userID):
+        img = db.child("Images").child(userID).get()
+        return img.val()
+
+    def imageExist(userID):
+        img = db.child("Images").child(userID).get()
+        if img.val() == None:
+            return False
+        return True

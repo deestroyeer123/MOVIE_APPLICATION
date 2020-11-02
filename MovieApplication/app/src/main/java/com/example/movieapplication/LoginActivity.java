@@ -9,7 +9,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +43,8 @@ public class LoginActivity extends AppCompatActivity {
     TextView tv_register, loading;
     ProgressBar progressBar;
 
+    public static boolean already_logged = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +69,10 @@ public class LoginActivity extends AppCompatActivity {
         log_password = findViewById(R.id.log_password);
         log_btn = findViewById(R.id.log_btn);
         tv_register = findViewById(R.id.tv_register);
+
+        View nav_header_title = navigationView.getHeaderView(0);
+        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+        header_title.setText(R.string.app_name);
 
         Menu nav_Menu = navigationView.getMenu();
         nav_Menu.findItem(R.id.nav_home).setVisible(false);
@@ -116,8 +121,6 @@ public class LoginActivity extends AppCompatActivity {
                 String email = log_email.getText().toString();
                 String password = log_password.getText().toString();
                 if(required_fields_ok(email, password)) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    loading.setVisibility(View.VISIBLE);
                     firebaseAuth.signInWithEmailAndPassword(email, password).
                             addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -139,6 +142,9 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             }
                             else{
+                                progressBar.setVisibility(View.VISIBLE);
+                                loading.setVisibility(View.VISIBLE);
+                                //already_logged = true;
                                 startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             }
                         }

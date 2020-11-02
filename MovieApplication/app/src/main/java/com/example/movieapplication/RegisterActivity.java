@@ -8,9 +8,7 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,15 +22,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.FirebaseException;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -44,21 +38,22 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.example.movieapplication.MainActivity.MY_URL;
+
 public class RegisterActivity extends AppCompatActivity {
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Toolbar toolbar;
 
-    EditText reg_login, reg_email, reg_password, reg_password2;
+    EditText reg_login, reg_email, reg_password;
     Button reg_btn;
     TextView tv_login, loading;
     ProgressBar progressBar;
     String ost_login, ost_email;
 
     FirebaseAuth firebaseAuth;
-    private DatabaseReference databaseReference;
-    public static String users = "users";
+    DatabaseReference databaseReference;
     public static boolean newUser = false;
 
     @Override
@@ -81,6 +76,10 @@ public class RegisterActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.navigation_view);
 
+        View nav_header_title = navigationView.getHeaderView(0);
+        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+        header_title.setText(R.string.app_name);
+
         Menu nav_Menu = navigationView.getMenu();
         nav_Menu.findItem(R.id.nav_home).setVisible(false);
         nav_Menu.findItem(R.id.nav_logout).setVisible(false);
@@ -92,7 +91,6 @@ public class RegisterActivity extends AppCompatActivity {
         tv_login = findViewById(R.id.tv_login);
         reg_login = findViewById(R.id.log_login);
         reg_password = findViewById(R.id.log_password);
-        reg_password2 = findViewById(R.id.log_password_confirm);
         reg_email = findViewById(R.id.log_email);
         reg_btn = findViewById(R.id.log_btn);
 
@@ -101,11 +99,8 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final String login = reg_login.getText().toString();
                 final String password = reg_password.getText().toString();
-                String password2 = reg_password2.getText().toString();
                 final String email = reg_email.getText().toString();
-                if(required_fields_ok(login, email, password, password2)) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    loading.setVisibility(View.VISIBLE);
+                if(required_fields_ok(login, email, password)) {
                     firebaseAuth.createUserWithEmailAndPassword(email, password).
                             addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
@@ -128,6 +123,8 @@ public class RegisterActivity extends AppCompatActivity {
                                 }
                             }
                             else{
+                                progressBar.setVisibility(View.VISIBLE);
+                                loading.setVisibility(View.VISIBLE);
                                 ost_login = login;
                                 ost_email = email;
                                 String userID = Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
@@ -183,10 +180,10 @@ public class RegisterActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public boolean required_fields_ok (String login, String email, String password, String password2)
+    public boolean required_fields_ok (String login, String email, String password)
     {
-        boolean log = false, em = false, pwd = false, pwd2 = false;
-        EditText[] tab_edit = {reg_login, reg_email, reg_password, reg_password2};
+        boolean log = false, em = false, pwd = false;
+        EditText[] tab_edit = {reg_login, reg_email, reg_password};
         int j = 0;
         if(login.isEmpty()) {
             reg_login.setError("Wpisz login");
@@ -203,12 +200,7 @@ public class RegisterActivity extends AppCompatActivity {
             pwd = true;
         }
         else j++;
-        if(password2.isEmpty()) {
-            reg_password2.setError("Potwierdź hasło");
-            pwd2 = true;
-        }
-        else j++;
-        Boolean[] empty = {log, em, pwd, pwd2};
+        Boolean[] empty = {log, em, pwd};
         for(int i = 0; i < empty.length; i++){
             if(empty[i]) {
                 tab_edit[i].requestFocus();
@@ -221,7 +213,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void profile_details(ProfileDetails profileDetails) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(ProfileDetailsApi.MY_URL)
+                .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -231,7 +223,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<ProfileDetails>() {
             @Override
-            public void onResponse(Call<ProfileDetails> call, Response<ProfileDetails> response) {
+            public void onResponse(@NonNull Call<ProfileDetails> call, @NonNull Response<ProfileDetails> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "przesłano uid", Toast.LENGTH_LONG).show();
 
@@ -242,7 +234,7 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(new Intent(RegisterActivity.this, ProfileActivity.class));
             }
             @Override
-            public void onFailure(Call<ProfileDetails> call, Throwable t) {
+            public void onFailure(@NonNull Call<ProfileDetails> call, @NonNull Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie udało się przesłać uid", Toast.LENGTH_LONG).show();
             }
@@ -252,7 +244,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void createNewUser(User user) {
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(NewUserApi.MY_URL)
+                .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -262,12 +254,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "Zarejestrowano", Toast.LENGTH_LONG).show();
             }
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "Nie udało się zarejestrować", Toast.LENGTH_LONG).show();
             }
