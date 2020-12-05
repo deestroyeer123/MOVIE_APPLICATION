@@ -64,10 +64,12 @@ public class OptionActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_option);
 
+        //zaladowanie toolbara
         toolbar = findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.settings_title);
         setSupportActionBar(toolbar);
 
+        //instancja FirebaseAuthentication
         firebaseAuth = FirebaseAuth.getInstance();
 
         final ActionBar actionBar = getSupportActionBar();
@@ -75,31 +77,11 @@ public class OptionActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_view);
-
-        View nav_header_title = navigationView.getHeaderView(0);
-        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
-        header_title.setText(R.string.app_name);
-
-        linearLayout = findViewById(R.id.layout);
-        progressBar = findViewById(R.id.op_progress_bar);
-        loading = findViewById(R.id.op_loading);
-        op_login = findViewById(R.id.opt_login);
-        op_email = findViewById(R.id.opt_email);
-
-        View img_header = navigationView.getHeaderView(0);
-        img = img_header.findViewById(R.id.header_img);
-
-        op_photo_btn = findViewById(R.id.op_photo_btn);
-
-        Menu nav_Menu = navigationView.getMenu();
+        initialize();
 
         load_data();
 
-        nav_Menu.findItem(R.id.nav_login).setVisible(false);
-        nav_Menu.findItem(R.id.nav_registration).setVisible(false);
-
+        //zmiana zdjecia profilowego
         op_photo_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +90,7 @@ public class OptionActivity extends AppCompatActivity {
             }
         });
 
+        //obsluga navigationView
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -157,6 +140,7 @@ public class OptionActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //załadowanie danych z bazy danych
     public void load_data (){
         progressBar.setVisibility(View.VISIBLE);
         linearLayout.setVisibility(View.INVISIBLE);
@@ -167,24 +151,20 @@ public class OptionActivity extends AppCompatActivity {
         set_values();
     }
 
+    //załadowanie emeila, loginu, headera i zdjecia z bazy danych
     public void set_values (){
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
         LoadUserApi loadUserApi = retrofit.create(LoadUserApi.class);
-
         Call<User> call = loadUserApi.loadUserDetails();
-
         call.enqueue(new Callback<User>() {
             @SuppressLint("SetTextI18n")
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "załadowano header, email, login", Toast.LENGTH_LONG).show();
-
                 User user = response.body();
                 View nav_header = navigationView.getHeaderView(0);
                 TextView header = nav_header.findViewById(R.id.nav_header);
@@ -200,21 +180,19 @@ public class OptionActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.INVISIBLE);
                 linearLayout.setVisibility(View.VISIBLE);
                 loading.setVisibility(View.INVISIBLE);
-
             }
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie załadowano headera, emaila, loginu", Toast.LENGTH_LONG).show();
-
                 progressBar.setVisibility(View.INVISIBLE);
                 linearLayout.setVisibility(View.VISIBLE);
                 loading.setVisibility(View.INVISIBLE);
             }
         });
-
     }
 
+    //zapisanie wybranego zdjecia w bazie danych
     private void put_storage(String img) {
 
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
@@ -257,6 +235,7 @@ public class OptionActivity extends AppCompatActivity {
 
     }
 
+    //wysyłanie uid uzytkownika do backendu
     public void profile_details(ProfileDetails profileDetails) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -282,7 +261,7 @@ public class OptionActivity extends AppCompatActivity {
         });
     }
 
-
+    //obsługa onActivityResult dla wybranego zdjecia z galerii
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -296,19 +275,6 @@ public class OptionActivity extends AppCompatActivity {
             img.setImageURI(null);
             img.setBackground(null);
             img.setImageURI(selectedImage);
-
-
-            /*
-            Picasso.with(getApplicationContext())
-                    .load(selectedImage)
-                    .into(img);
-
-
-            Glide.with(getApplicationContext())
-                    .load(selectedImage)
-                    .into(img);
-
-             */
 
             InputStream imageStream = null;
             try {
@@ -332,6 +298,32 @@ public class OptionActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    //inicjalizacja zmiennych
+    public void initialize () {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+
+        View nav_header_title = navigationView.getHeaderView(0);
+        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+        header_title.setText(R.string.app_name);
+
+        linearLayout = findViewById(R.id.layout);
+        progressBar = findViewById(R.id.op_progress_bar);
+        loading = findViewById(R.id.op_loading);
+        op_login = findViewById(R.id.opt_login);
+        op_email = findViewById(R.id.opt_email);
+
+        View img_header = navigationView.getHeaderView(0);
+        img = img_header.findViewById(R.id.header_img);
+
+        op_photo_btn = findViewById(R.id.op_photo_btn);
+
+        Menu nav_Menu = navigationView.getMenu();
+
+        nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        nav_Menu.findItem(R.id.nav_registration).setVisible(false);
     }
 
 }

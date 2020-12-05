@@ -50,10 +50,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        //załadowanie toolbara
         toolbar = findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.login_title);
         setSupportActionBar(toolbar);
 
+        //instancja FirebaseAuthentication
         firebaseAuth = FirebaseAuth.getInstance();
 
         final ActionBar actionBar = getSupportActionBar();
@@ -61,25 +63,9 @@ public class LoginActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_view);
-        progressBar = findViewById(R.id.login_progress_bar);
-        loading = findViewById(R.id.login_loading);
-        log_email = findViewById(R.id.log_email);
-        log_password = findViewById(R.id.log_password);
-        log_btn = findViewById(R.id.log_btn);
-        tv_register = findViewById(R.id.tv_register);
+        initialize();
 
-        View nav_header_title = navigationView.getHeaderView(0);
-        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
-        header_title.setText(R.string.app_name);
-
-        Menu nav_Menu = navigationView.getMenu();
-        nav_Menu.findItem(R.id.nav_home).setVisible(false);
-        nav_Menu.findItem(R.id.nav_logout).setVisible(false);
-        nav_Menu.findItem(R.id.nav_profile).setVisible(false);
-        nav_Menu.findItem(R.id.nav_settings).setVisible(false);
-
+        //zalogowany czy niezalogowany
         authStateListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -94,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         };
 
+        //obsługa navigationView
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -115,6 +102,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        //logowanie
         log_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -144,7 +132,7 @@ public class LoginActivity extends AppCompatActivity {
                             else{
                                 progressBar.setVisibility(View.VISIBLE);
                                 loading.setVisibility(View.VISIBLE);
-                                //already_logged = true;
+                                already_logged = true;
                                 startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                             }
                         }
@@ -179,6 +167,7 @@ public class LoginActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //czy puste pola przy logowaniu
     public boolean required_fields_ok (String email, String password)
     {
         int j = 0;
@@ -194,5 +183,28 @@ public class LoginActivity extends AppCompatActivity {
         else j++;
         if(j == 0) log_email.requestFocus();
         return j == 2;
+    }
+
+
+    //inicjalizacja zmiennych
+    public void initialize (){
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+        progressBar = findViewById(R.id.login_progress_bar);
+        loading = findViewById(R.id.login_loading);
+        log_email = findViewById(R.id.log_email);
+        log_password = findViewById(R.id.log_password);
+        log_btn = findViewById(R.id.log_btn);
+        tv_register = findViewById(R.id.tv_register);
+
+        View nav_header_title = navigationView.getHeaderView(0);
+        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+        header_title.setText(R.string.app_name);
+
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.nav_home).setVisible(false);
+        nav_Menu.findItem(R.id.nav_logout).setVisible(false);
+        nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+        nav_Menu.findItem(R.id.nav_settings).setVisible(false);
     }
 }

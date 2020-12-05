@@ -16,30 +16,27 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-// Adapter class inherits from BaseAdapter and implements OnClickListener
 public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
 
-    // Declare Variables
     private Activity activity;
     private ArrayList data;
     private static LayoutInflater inflater = null;
     public Resources res;
     ListModel tempValues = null;
 
-    // CustomAdapter Constructor
+    //konstruktor adaptera do listView
     public CustomAdapter(Activity a, ArrayList d, Resources resLocal) {
 
-// Get passed values
+
         activity = a;
         data = d;
         res = resLocal;
 
-// Layout inflator to call external xml layout ()
         inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     }
 
-    // What is the size of Passed Arraylist Size
+    //rozmiar listView
     public int getCount() {
 
         if (data.size() <= 0) {
@@ -57,7 +54,7 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
         return position;
     }
 
-    // Create a holder Class to contain inflated xml file elements
+    //klasa elementów xmlowych wystepujacych w listView
     public static class ViewHolder {
 
         TextView item_name;
@@ -65,7 +62,7 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
         ImageView item_img;
     }
 
-    // Depends upon data size called for each row , Create each ListView row
+    //tworzenie listView
     @SuppressLint({"InflateParams", "SetTextI18n"})
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -74,17 +71,15 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
 
         if (convertView == null) {
 
-// Inflate list_itemem.xml file for each row ( Defined below )
+            //wyglad kazdego elementu z listView
             vi = inflater.inflate(R.layout.list_item, null);
 
-// View Holder Object to contain list_item.xmlml file elements
-
+            //inicjalizacja elementów xmlowych wystepujacych w listView
             holder = new ViewHolder();
             holder.item_name = vi.findViewById(R.id.item_name);
             holder.item_age = vi.findViewById(R.id.item_age);
             holder.item_img = vi.findViewById(R.id.image);
 
-// Set holder with LayoutInflater
             vi.setTag(holder);
         } else {
             holder = (ViewHolder) vi.getTag();
@@ -93,16 +88,16 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
         if (data.size() <= 0) {
             holder.item_name.setText("No Data");
         } else {
-// Get each Model object from Arraylist
+
             tempValues = null;
             tempValues = (ListModel) data.get(position);
 
-// Set Model values in Holder elements
+            //ustawienie wartosci poczatkowych elementów
             holder.item_name.setText(tempValues.get_name());
             holder.item_age.setText(String.valueOf(tempValues.get_age()));
             holder.item_img.setImageBitmap(tempValues.get_img());
 
-// Set Item Click Listner for LayoutInflater for each row
+            //klikniecie elementu
             vi.setOnClickListener(new OnItemClickListener(position));
         }
         return vi;
@@ -113,7 +108,6 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
         Log.v("CustomAdapter", "=====Row button clicked=====");
     }
 
-    // Called when Item click in ListView
     private class OnItemClickListener implements View.OnClickListener {
         private int mPosition;
 
@@ -125,7 +119,7 @@ public class CustomAdapter extends BaseAdapter implements View.OnClickListener {
         public void onClick(View arg0) {
             HomeActivity act = (HomeActivity) activity;
 
-// Call  onItemClick Method inside MainActivity Class
+            //klikniecie elementu
             act.onItemClick(mPosition);
         }
     }

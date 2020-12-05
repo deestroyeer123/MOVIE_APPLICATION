@@ -10,6 +10,7 @@ from .serializers import ProfileSerializer, ProfileDetailsSerializer, UserSerial
 from .my_database import DatabaseHelper
 from .knn import Knn
 
+#osbługa zdjęcia (zapis/pobranie)
 class userStorage(APIView):
     def get(self, request):
         img = None
@@ -29,6 +30,7 @@ class userStorage(APIView):
         return Response(img, status=status.HTTP_201_CREATED)
         #return Response(img, status=status.HTTP_400_BAD_REQUEST)
 
+#pobranie emaila i loginu
 class userDetails(APIView):
     def get(self, request):
         userID = DatabaseHelper.uID
@@ -38,6 +40,7 @@ class userDetails(APIView):
     def post(self):
         pass
 
+#obsługa uzytkownika (pobranie wszystkich, zapisanie nowego)
 class userView(APIView):
 
     def get(self, request):
@@ -54,6 +57,7 @@ class userView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#pobranie profilu z bazy danych i załadowanie do frontendu
 class loadProfile(APIView):
     def get(self, request):
         userID = DatabaseHelper.uID
@@ -66,6 +70,8 @@ class loadProfile(APIView):
             return Response(profile)
     def post(self):
         pass
+
+#pobranie uid w frontendu
 class profileDetails(APIView):
     def get(self, request):
         profile = ProfileDetails.objects.all()
@@ -78,6 +84,8 @@ class profileDetails(APIView):
             DatabaseHelper.uID = next(iter(serializer.data.values()))
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#obsługa profilu (pobranie wszystkich, zapisanie nowego/zaktualizowanie)
 class profileView(APIView):
 
     def get(self, request):
@@ -98,6 +106,7 @@ class profileView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+#pobranie profili użytkowników dopasowanych wraz ze zdjeciami
 class getMatchedUsers(APIView):
     def get(self, request):
         listProfiles = []
@@ -116,12 +125,13 @@ class getMatchedUsers(APIView):
     def post(self):
         pass
 
+#usuniecie i inicjalizacja szablonu bazy wyborów
 def initializeBase(request):
     DatabaseHelper.removeBase()
     DatabaseHelper.initialize()
     return render(request, 'movie_app/cos.html')
     
-
+#nauka modelu
 def learnModel(request):
     #Knn.learn()
     return render(request, 'movie_app/cos.html')

@@ -27,8 +27,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 
@@ -53,7 +51,6 @@ public class RegisterActivity extends AppCompatActivity {
     String ost_login, ost_email;
 
     FirebaseAuth firebaseAuth;
-    DatabaseReference databaseReference;
     public static boolean newUser = false;
 
     @Override
@@ -61,39 +58,22 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-
+        //zaladowanie toolbara
         toolbar = findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.register_title);
         setSupportActionBar(toolbar);
+
+        //instancja FirebaseAuthentication
+        firebaseAuth = FirebaseAuth.getInstance();
 
         final ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_view);
+        initialize();
 
-        View nav_header_title = navigationView.getHeaderView(0);
-        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
-        header_title.setText(R.string.app_name);
-
-        Menu nav_Menu = navigationView.getMenu();
-        nav_Menu.findItem(R.id.nav_home).setVisible(false);
-        nav_Menu.findItem(R.id.nav_logout).setVisible(false);
-        nav_Menu.findItem(R.id.nav_profile).setVisible(false);
-        nav_Menu.findItem(R.id.nav_settings).setVisible(false);
-
-        loading = findViewById(R.id.reg_loading);
-        progressBar = findViewById(R.id.reg_progress_bar);
-        tv_login = findViewById(R.id.tv_login);
-        reg_login = findViewById(R.id.log_login);
-        reg_password = findViewById(R.id.log_password);
-        reg_email = findViewById(R.id.log_email);
-        reg_btn = findViewById(R.id.log_btn);
-
+        //rejestracja
         reg_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -121,8 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     e.printStackTrace();
                                     Toast.makeText(RegisterActivity.this, "Niepowodzenie, spróbuj jeszcze raz", Toast.LENGTH_LONG).show();
                                 }
-                            }
-                            else{
+                            } else {
                                 progressBar.setVisibility(View.VISIBLE);
                                 loading.setVisibility(View.VISIBLE);
                                 ost_login = login;
@@ -134,8 +113,6 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     });
                 }
-
-
             }
         });
 
@@ -147,6 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        //obsluga navigationView
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -180,6 +158,7 @@ public class RegisterActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //czy puste pola przy rejestracji
     public boolean required_fields_ok (String login, String email, String password)
     {
         boolean log = false, em = false, pwd = false;
@@ -210,6 +189,7 @@ public class RegisterActivity extends AppCompatActivity {
         return j == tab_edit.length;
     }
 
+    //wysyłanie uid uzytkownika do backendu
     public void profile_details(ProfileDetails profileDetails) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -241,17 +221,14 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    //zapisanie nowego użytkownika w bazie danych
     public void createNewUser(User user) {
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
         NewUserApi newUserApi = retrofit.create(NewUserApi.class);
-
         Call<User> call = newUserApi.addUser(user);
-
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
@@ -264,6 +241,30 @@ public class RegisterActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Nie udało się zarejestrować", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    //inicjalizacja zmiennych
+    public void initialize () {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+
+        loading = findViewById(R.id.reg_loading);
+        progressBar = findViewById(R.id.reg_progress_bar);
+        tv_login = findViewById(R.id.tv_login);
+        reg_login = findViewById(R.id.log_login);
+        reg_password = findViewById(R.id.log_password);
+        reg_email = findViewById(R.id.log_email);
+        reg_btn = findViewById(R.id.log_btn);
+
+        View nav_header_title = navigationView.getHeaderView(0);
+        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+        header_title.setText(R.string.app_name);
+
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.nav_home).setVisible(false);
+        nav_Menu.findItem(R.id.nav_logout).setVisible(false);
+        nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+        nav_Menu.findItem(R.id.nav_settings).setVisible(false);
     }
 
 }

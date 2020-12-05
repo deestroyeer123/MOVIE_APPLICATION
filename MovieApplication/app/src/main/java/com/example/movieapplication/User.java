@@ -19,9 +19,7 @@ public class User {
     public String get_login() {
         return login;
     }
-
     public String get_email() {
         return email;
     }
-
 }

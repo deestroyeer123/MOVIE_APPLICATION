@@ -55,11 +55,13 @@ public class ProfileUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile_user);
 
+        //pobranie wbranej pozycji z listView oraz wybranego profilu
         Intent showProfile = getIntent();
         ImageProfile selected_profile = (ImageProfile) showProfile.getSerializableExtra("selectedProfile");
         Intent getPosition = getIntent();
         int position = getPosition.getIntExtra("position", 0);
 
+        //załadowanie toolbara
         toolbar = findViewById(R.id.app_bar);
         assert selected_profile != null;
         toolbar.setTitle(selected_profile.get_name());
@@ -70,55 +72,15 @@ public class ProfileUserActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
+        //instancja FirebaseAuthentication
         firebaseAuth = FirebaseAuth.getInstance();
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_view);
-
-        View nav_header_title = navigationView.getHeaderView(0);
-        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
-        header_title.setText(R.string.app_name);
-
-        profile_user_img = findViewById(R.id.profile_user_img);
-        name = findViewById(R.id.profile_user_name);
-        age = findViewById(R.id.profile_user_age);
-        sex = findViewById(R.id.profile_user_sex);
-        movie1 = findViewById(R.id.profile_user_movie1);
-        movie2 = findViewById(R.id.profile_user_movie2);
-        movie3 = findViewById(R.id.profile_user_movie3);
-        elem1 = findViewById(R.id.profile_user_elem1);
-        elem2 = findViewById(R.id.profile_user_elem2);
-        elem3 = findViewById(R.id.profile_user_elem3);
-        place = findViewById(R.id.profile_user_place);
-        country1 = findViewById(R.id.profile_user_country1);
-        country2 = findViewById(R.id.profile_user_country2);
-        country3 = findViewById(R.id.profile_user_country3);
-        actor1 = findViewById(R.id.profile_user_actor1);
-        actor2 = findViewById(R.id.profile_user_actor2);
-        actor3 = findViewById(R.id.profile_user_actor3);
-        director1 = findViewById(R.id.profile_user_director1);
-        director2 = findViewById(R.id.profile_user_director2);
-        director3 = findViewById(R.id.profile_user_director3);
-        oscar = findViewById(R.id.profile_user_oscar);
-        years1 = findViewById(R.id.profile_user_years1);
-        years2 = findViewById(R.id.profile_user_years2);
-        years3 = findViewById(R.id.profile_user_years3);
-        food1 = findViewById(R.id.profile_user_food1);
-        food2 = findViewById(R.id.profile_user_food2);
-        food3 = findViewById(R.id.profile_user_food3);
-        group = findViewById(R.id.profile_user_group);
-        relativeLayout = findViewById(R.id.profile_user_layout);
-        progressBar = findViewById(R.id.profile_user_progress_bar);
-        loading = findViewById(R.id.profile_user_loading);
+        initialize();
 
         load_data();
         set_profile(selected_profile, position);
-        //profile_user_img.setImageBitmap(IMG);
 
-        Menu nav_Menu = navigationView.getMenu();
-        nav_Menu.findItem(R.id.nav_login).setVisible(false);
-        nav_Menu.findItem(R.id.nav_registration).setVisible(false);
-
+        //obsluga navigationView
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -160,6 +122,7 @@ public class ProfileUserActivity extends AppCompatActivity {
 
     }
 
+    //ustawienie podgloadu profilu wybranej osoby na podstaweie przesłanej pozycji i profilu z poprzedniej aktywnosci
     @SuppressLint("SetTextI18n")
     public void set_profile(ImageProfile profile, int position){
         if(bitmapsImages.get(position) != null) {
@@ -206,6 +169,7 @@ public class ProfileUserActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //zaladowanie danych z bazy danych
     public void load_data (){
         progressBar.setVisibility(View.VISIBLE);
         relativeLayout.setVisibility(View.INVISIBLE);
@@ -216,6 +180,7 @@ public class ProfileUserActivity extends AppCompatActivity {
         set_values();
     }
 
+    //zaladowanie header i zdjecia z bazy danych
     public void set_values (){
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -263,6 +228,7 @@ public class ProfileUserActivity extends AppCompatActivity {
 
     }
 
+    //wysyłanie uid uzytkownika do backendu
     public void profile_details(ProfileDetails profileDetails) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -286,5 +252,51 @@ public class ProfileUserActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "nie udało się przesłać uid", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    //inicjalizacja zmiennych
+    public void initialize (){
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+
+        View nav_header_title = navigationView.getHeaderView(0);
+        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+        header_title.setText(R.string.app_name);
+
+        profile_user_img = findViewById(R.id.profile_user_img);
+        name = findViewById(R.id.profile_user_name);
+        age = findViewById(R.id.profile_user_age);
+        sex = findViewById(R.id.profile_user_sex);
+        movie1 = findViewById(R.id.profile_user_movie1);
+        movie2 = findViewById(R.id.profile_user_movie2);
+        movie3 = findViewById(R.id.profile_user_movie3);
+        elem1 = findViewById(R.id.profile_user_elem1);
+        elem2 = findViewById(R.id.profile_user_elem2);
+        elem3 = findViewById(R.id.profile_user_elem3);
+        place = findViewById(R.id.profile_user_place);
+        country1 = findViewById(R.id.profile_user_country1);
+        country2 = findViewById(R.id.profile_user_country2);
+        country3 = findViewById(R.id.profile_user_country3);
+        actor1 = findViewById(R.id.profile_user_actor1);
+        actor2 = findViewById(R.id.profile_user_actor2);
+        actor3 = findViewById(R.id.profile_user_actor3);
+        director1 = findViewById(R.id.profile_user_director1);
+        director2 = findViewById(R.id.profile_user_director2);
+        director3 = findViewById(R.id.profile_user_director3);
+        oscar = findViewById(R.id.profile_user_oscar);
+        years1 = findViewById(R.id.profile_user_years1);
+        years2 = findViewById(R.id.profile_user_years2);
+        years3 = findViewById(R.id.profile_user_years3);
+        food1 = findViewById(R.id.profile_user_food1);
+        food2 = findViewById(R.id.profile_user_food2);
+        food3 = findViewById(R.id.profile_user_food3);
+        group = findViewById(R.id.profile_user_group);
+        relativeLayout = findViewById(R.id.profile_user_layout);
+        progressBar = findViewById(R.id.profile_user_progress_bar);
+        loading = findViewById(R.id.profile_user_loading);
+
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        nav_Menu.findItem(R.id.nav_registration).setVisible(false);
     }
 }

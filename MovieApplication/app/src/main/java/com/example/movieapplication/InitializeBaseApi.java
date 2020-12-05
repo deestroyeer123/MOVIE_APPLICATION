@@ -6,6 +6,7 @@ import retrofit2.http.GET;
 
 public interface InitializeBaseApi {
 
+    //zapytanie do serwera o baze wyborów
     @GET("/profile/base/")
     Call<ResponseBody> initialize();
 }

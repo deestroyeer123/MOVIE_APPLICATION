@@ -31,8 +31,6 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,7 +51,6 @@ import static com.example.movieapplication.MainActivity.IMG;
 public class ProfileActivity extends AppCompatActivity {
 
     FirebaseAuth firebaseAuth;
-    DatabaseReference databaseReference;
 
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -80,12 +77,13 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
+        //zaladowanie toolbara
         toolbar = findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.profile_title);
         setSupportActionBar(toolbar);
 
+        //instancja FirebaseAuthentication
         firebaseAuth = FirebaseAuth.getInstance();
-        databaseReference = FirebaseDatabase.getInstance().getReference();
 
         final ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -93,10 +91,6 @@ public class ProfileActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
         initialize();
-
-        View nav_header_title = navigationView.getHeaderView(0);
-        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
-        header_title.setText(R.string.app_name);
 
         final CheckBox[] movie_types = {action_film, comedy, drama, fantasy, horror, disaster_film, adv_film, scifi, thriller,
                 western, war_film, romantic, animated, biographical, documentary};
@@ -109,7 +103,7 @@ public class ProfileActivity extends AppCompatActivity {
         final RadioButton[] radioButtons = {man, home, oscars_true, group_true};
 
         load_spinners();
-        set_profile_values(movie_types, movie_elements, country_production, year_production, food);
+        load_data(movie_types, movie_elements, country_production, year_production, food);
 
         max3_all_tables(movie_types, title_movies);
         max3_all_tables(movie_elements, title_elements);
@@ -119,10 +113,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         radio_group_changes(radioGroups, radioButtons);
 
-        Menu nav_Menu = navigationView.getMenu();
-        nav_Menu.findItem(R.id.nav_login).setVisible(false);
-        nav_Menu.findItem(R.id.nav_registration).setVisible(false);
-
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,6 +120,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        //zapisanie profilu
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -179,6 +170,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
+        //obsluga navigationView
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -216,11 +208,13 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    //wyłaczenie przycisku cofnij dla nowego użytkownika (potrzeba wypelnienia profilu)
     @Override
     public void onBackPressed(){
         if(!newUser) super.onBackPressed();
     }
 
+    //zapisanie profilu w bazie danych
     public void create_profile(Profile profile) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -247,6 +241,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    //wysyłanie uid uzytkownika do backendu
     public void profile_details(ProfileDetails profileDetails) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -272,26 +267,21 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    //ładowanie profilu dla aktualnego uzytkownika z bazy danych
     public void load_profile(final CheckBox[] movie_types, final CheckBox[] movie_elements, final CheckBox[] countries,
                              final CheckBox[] years, final CheckBox[] foods) {
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(MY_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-
         LoadProfileApi loadProfileApi = retrofit.create(LoadProfileApi.class);
-
         Call<Profile> call = loadProfileApi.loadProfile();
-
         call.enqueue(new Callback<Profile>() {
             @Override
             public void onResponse(@NonNull Call<Profile> call, @NonNull Response<Profile> response) {
                 Log.d("good", "good");
                 Toast.makeText(getApplicationContext(), "załadowano dane", Toast.LENGTH_LONG).show();
-
                 Profile profile = response.body();
-
                 if(profile != null) {
                     pr_name.setText(profile.get_name());
                     pr_age.setText(String.valueOf(profile.get_age()));
@@ -328,10 +318,9 @@ public class ProfileActivity extends AppCompatActivity {
                     if (group_true.getText().toString().equals(profile.get_group()))
                         group_true.setChecked(true);
                     else group_false.setChecked(true);
-                    set_disenabled(movie_types, movie_elements, countries, years, foods);
+                    set_disabled(movie_types, movie_elements, countries, years, foods);
                     newUser = false;
                 }
-
                 progressBar.setVisibility(View.INVISIBLE);
                 scrollView.setVisibility(View.VISIBLE);
                 loading.setVisibility(View.INVISIBLE);
@@ -340,13 +329,11 @@ public class ProfileActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<Profile> call, @NonNull Throwable t) {
                 Log.d("fail", "fail");
                 Toast.makeText(getApplicationContext(), "nie ma profilu", Toast.LENGTH_LONG).show();
-
                 progressBar.setVisibility(View.INVISIBLE);
                 scrollView.setVisibility(View.VISIBLE);
                 loading.setVisibility(View.INVISIBLE);
             }
         });
-
     }
 
     public void selected_actors(Spinner spinner, String val){
@@ -380,7 +367,8 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    public void set_profile_values(final CheckBox[] movie_types, final CheckBox[] movie_elements, final CheckBox[] countries,
+    //załadowanie danych z bazy danych
+    public void load_data(final CheckBox[] movie_types, final CheckBox[] movie_elements, final CheckBox[] countries,
                                    final CheckBox[] years, final CheckBox[] foods){
         progressBar.setVisibility(View.VISIBLE);
         scrollView.setVisibility(View.INVISIBLE);
@@ -403,6 +391,7 @@ public class ProfileActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //załadowanie headera i zdjecia z bazy danych
     public void set_values (){
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -442,6 +431,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    //uniemozliwienie wyboru wiecej niz 3 checkboxów
     public void max3_selected (CheckBox[] tab, TextView textView){
         int j = 0;
         for (CheckBox checkBox : tab) if (checkBox.isChecked()) j++;
@@ -460,6 +450,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    //max3_selected() dla wszystkich miejsc z checkboxami
     public void max3_all_tables (final CheckBox[] tab, final TextView textView){
         for (CheckBox checkBox : tab) {
             checkBox.setOnClickListener(new View.OnClickListener() {
@@ -471,7 +462,7 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-
+    //zwraca liste wartosci wybranch checkboxów
     public List<String> get_selected(CheckBox[] tab) {
         List<String> selected = new ArrayList<>();
         for (CheckBox checkBox : tab) {
@@ -480,14 +471,48 @@ public class ProfileActivity extends AppCompatActivity {
         return selected;
     }
 
+    //zwraca true gdy nie wybrano dokladnie 3 checboxów z kategorii
     public boolean check_selected (CheckBox[] tab){
         int j = 0;
         for(CheckBox checkBox : tab){
             if(checkBox.isChecked()) j++;
         }
-        return j == 3;
+        return j != 3;
     }
 
+    //wybór różnych elementów w spinnerach
+    public boolean not_unique_spinner_elem (Spinner sp1, Spinner sp2, Spinner sp3) {
+        return sp1.getSelectedItem().toString().equals(sp2.getSelectedItem().toString())
+                || sp2.getSelectedItem().toString().equals(sp3.getSelectedItem().toString())
+                || sp1.getSelectedItem().toString().equals(sp3.getSelectedItem().toString());
+    }
+
+    //zwrocenie powtarzalnych spinnerów
+    public List<Spinner> get_not_unique_spinner (Spinner sp1, Spinner sp2, Spinner sp3) {
+        List<Spinner> spinners = new ArrayList<>();
+        if (sp1.getSelectedItem().toString().equals(sp2.getSelectedItem().toString())
+            && sp2.getSelectedItem().toString().equals(sp3.getSelectedItem().toString())
+            && sp1.getSelectedItem().toString().equals(sp3.getSelectedItem().toString())){
+            spinners.add(sp1);
+            spinners.add(sp2);
+            spinners.add(sp3);
+        }
+        else if (sp1.getSelectedItem().toString().equals(sp2.getSelectedItem().toString())) {
+            spinners.add(sp1);
+            spinners.add(sp2);
+        }
+        else if (sp2.getSelectedItem().toString().equals(sp3.getSelectedItem().toString())) {
+            spinners.add(sp2);
+            spinners.add(sp3);
+        }
+        else if (sp1.getSelectedItem().toString().equals(sp3.getSelectedItem().toString())) {
+            spinners.add(sp1);
+            spinners.add(sp3);
+        }
+        return spinners;
+    }
+
+    //puste pola albo nie wybrane pozycje przy tworzeniu profilu
     public boolean required_fields_ok (CheckBox[] movies, CheckBox[] elements, CheckBox[] countries, CheckBox[] years, CheckBox[] foods)
     {
         int j = 0;
@@ -503,11 +528,11 @@ public class ProfileActivity extends AppCompatActivity {
             man.setError("Podaj płeć");
         }
         else j++;
-        if(!check_selected(movies)) {
+        if(check_selected(movies)) {
             title_movies.setError("Wybierz 3 filmy");
         }
         else j++;
-        if(!check_selected(elements)) {
+        if(check_selected(elements)) {
             title_elements.setError("Wybierz 3 elementy");
         }
         else j++;
@@ -515,7 +540,7 @@ public class ProfileActivity extends AppCompatActivity {
             home.setError("Wybierz miejsce");
         }
         else j++;
-        if(!check_selected(countries)) {
+        if(check_selected(countries)) {
             title_countries.setError("Wybierz 3 kraje");
         }
         else j++;
@@ -541,11 +566,11 @@ public class ProfileActivity extends AppCompatActivity {
             oscars_true.setError("Zaznacz tak lub nie");
         }
         else j++;
-        if(!check_selected(years)) {
+        if(check_selected(years)) {
             title_years.setError("Wybierz 3 przedziały lat");
         }
         else j++;
-        if(!check_selected(foods)) {
+        if(check_selected(foods)) {
             title_foods.setError("Wybierz 3 przekąski");
         }
         else j++;
@@ -553,10 +578,21 @@ public class ProfileActivity extends AppCompatActivity {
             group_true.setError("Wybierz grupę");
         }
         else j++;
+        if(not_unique_spinner_elem(spin_actors, spin_actors2, spin_actors3)) {
+            List<Spinner> spinners = get_not_unique_spinner(spin_actors, spin_actors2, spin_actors3);
+            for (Spinner spinner : spinners) ((TextView)spinner.getSelectedView()).setError("Wybierz różnych aktorów");
+        }
+        else j++;
+        if(not_unique_spinner_elem(spin_directors, spin_directors2, spin_directors3)) {
+            List<Spinner> spinners = get_not_unique_spinner(spin_directors, spin_directors2, spin_directors3);
+            for (Spinner spinner : spinners) ((TextView)spinner.getSelectedView()).setError("Wybierz różnych reżyserów");
+        }
+        else j++;
 
-        return j == 17;
+        return j == 19;
     }
 
+    //zaladowanie spinnerów aktorow i rezyserów z danymi
     public void load_spinners (){
         List<String> actors_sorted = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.Actors)));
         Collections.sort(actors_sorted);
@@ -576,6 +612,7 @@ public class ProfileActivity extends AppCompatActivity {
         spin_directors3.setAdapter(directors_adapter);
     }
 
+    //wykacowanie errora przy wybraniu radiobuttona
     public void radio_group_changes (RadioGroup[] radioGroups, final RadioButton[] radioButtons){
         for (int i = 0; i < radioGroups.length; i++) {
             final int finalI = i;
@@ -588,11 +625,13 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
+    //ustawienie aktywnosci/nieaktywnosci wszystkich checboxów z grupy
     public void checkboxes_state(CheckBox[] checkBoxes, boolean state){
         for (CheckBox checkBox : checkBoxes) checkBox.setEnabled(state);
     }
 
-    public void set_disenabled(CheckBox[] movies, CheckBox[] elements, CheckBox[] countries, CheckBox[] years, CheckBox[] foods){
+    //dane profilu nieaktywne
+    public void set_disabled(CheckBox[] movies, CheckBox[] elements, CheckBox[] countries, CheckBox[] years, CheckBox[] foods){
         pr_name.setEnabled(false);
         pr_age.setEnabled(false);
         man.setEnabled(false);
@@ -618,6 +657,7 @@ public class ProfileActivity extends AppCompatActivity {
         save.setEnabled(false);
     }
 
+    //dane profilu aktywne
     public void set_enabled(CheckBox[] movies, CheckBox[] elements, CheckBox[] countries, CheckBox[] years, CheckBox[] foods){
         pr_name.setEnabled(true);
         pr_age.setEnabled(true);
@@ -644,6 +684,7 @@ public class ProfileActivity extends AppCompatActivity {
         save.setEnabled(true);
     }
 
+   //inincjalizacja zmiennych
    public void initialize(){
        drawerLayout = findViewById(R.id.drawer_layout);
        navigationView = findViewById(R.id.navigation_view);
@@ -727,6 +768,14 @@ public class ProfileActivity extends AppCompatActivity {
        sticks = findViewById(R.id.profile_salty_sticks);
        cookies = findViewById(R.id.profile_cookies);
        nothing = findViewById(R.id.profile_food_nothing);
+
+       View nav_header_title = navigationView.getHeaderView(0);
+       TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+       header_title.setText(R.string.app_name);
+
+       Menu nav_Menu = navigationView.getMenu();
+       nav_Menu.findItem(R.id.nav_login).setVisible(false);
+       nav_Menu.findItem(R.id.nav_registration).setVisible(false);
    }
 
 

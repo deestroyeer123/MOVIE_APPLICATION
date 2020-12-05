@@ -70,8 +70,8 @@ public class HomeActivity extends AppCompatActivity {
     RelativeLayout relativeLayout;
     CardView cardView;
 
-    List<ImageProfile> profileList = new ArrayList<>();
-    public static List<Bitmap> bitmapsImages = new ArrayList<>();
+    List<ImageProfile> profileList = new ArrayList<>(); //profile dla dopasowanych osób
+    public static List<Bitmap> bitmapsImages = new ArrayList<>(); //bitmapy dla dopasowanych osób
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -79,35 +79,23 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        //załadowanie toolbara
         toolbar = findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.home_title);
         setSupportActionBar(toolbar);
 
+        //instancja FirebaseAuthentication
         firebaseAuth = FirebaseAuth.getInstance();
 
         show_navigation_btn(false);
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_view);
-
-        View nav_header_title = navigationView.getHeaderView(0);
-        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
-        header_title.setText(R.string.app_name);
-
-        cardView = findViewById(R.id.card_view);
-        progressBar = findViewById(R.id.home_progress_bar);
-        relativeLayout = findViewById(R.id.home_layout);
-        loading = findViewById(R.id.home_loading);
-        item_list = findViewById(R.id.home_list);
-
-        Menu nav_Menu = navigationView.getMenu();
-        nav_Menu.findItem(R.id.nav_login).setVisible(false);
-        nav_Menu.findItem(R.id.nav_registration).setVisible(false);
+        initialize();
 
         load_data();
 
         CustomListView = this;
 
+        //obsługa navigationView
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -148,11 +136,12 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    //podgląd wybranego profilu
     public void onItemClick(int mPosition) {
-        ImageProfile selected_profile = profileList.get(mPosition);
+        ImageProfile selected_profile = profileList.get(mPosition); //wybrany profil do podglądu
         Intent sendProfile = new Intent(HomeActivity.this, ProfileUserActivity.class);
-        sendProfile.putExtra("selectedProfile", selected_profile);
-        sendProfile.putExtra("position", mPosition);
+        sendProfile.putExtra("selectedProfile", selected_profile); //przesłanie wybranego profilu do aktywnosci podgladu
+        sendProfile.putExtra("position", mPosition);  //wyslanie pozycji do aktywnosci podgladu w celu zaladowania odpowiedniego img
         startActivity(sendProfile);
     }
 
@@ -167,6 +156,7 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    //ładowanie danych z bazy danych
     public void load_data (){
         progressBar.setVisibility(View.VISIBLE);
         relativeLayout.setVisibility(View.INVISIBLE);
@@ -176,9 +166,9 @@ public class HomeActivity extends AppCompatActivity {
         profile_details(profileDetails);
         set_values();
         load_matched_users();
-        //if(already_logged) load_img();
     }
 
+    //pokazanie lub ukrycie navigation btn'a (pokazanie dopiero po załadowaniu profili)
     public void show_navigation_btn(boolean state){
         final ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -186,6 +176,7 @@ public class HomeActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
     }
 
+    //załadowanie zdjecia i headera z bazy danych
     public void set_values (){
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -216,6 +207,10 @@ public class HomeActivity extends AppCompatActivity {
                         header_img.setImageBitmap(IMG);
                     }
                 }
+                else {
+                    load_img();
+                    already_logged = false;
+                }
 
             }
             @Override
@@ -227,6 +222,7 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    //zwrocenie bitmapy dla zasobu Drawable
     public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
         Drawable drawable = ContextCompat.getDrawable(context, drawableId);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -244,8 +240,10 @@ public class HomeActivity extends AppCompatActivity {
         return bitmap;
     }
 
+    //załadowanie listy osób wybranych dla użytkownika
     public void load_matched_users (){
 
+        //dłuższy czas oczekiwania na response
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
                 .connectTimeout(1200, TimeUnit.SECONDS)
                 .readTimeout(1200, TimeUnit.SECONDS)
@@ -273,6 +271,8 @@ public class HomeActivity extends AppCompatActivity {
 
                 List<Bitmap> bitmaps = new ArrayList<>();
 
+                //przechowywanie bitmap wybranych osob w osobnej liscie bitmaps nie przesyłanej do aktywnosci podgladu
+                //profile wybranych osob bez zdjec (bo za duzy rozmiar)
                 for(ImageProfile imageProfile : imageProfileList){
                     if(imageProfile.get_img() != null) {
                         byte[] decodedString = Base64.decode(imageProfile.get_img(), Base64.DEFAULT);
@@ -285,9 +285,10 @@ public class HomeActivity extends AppCompatActivity {
                     imageProfile.set_img(null);
                 }
 
-                bitmapsImages = bitmaps;
-                profileList = imageProfileList;
+                bitmapsImages = bitmaps; //same bitmapy
+                profileList = imageProfileList; //profile bez zdjec
 
+                //ładowanie danych do listView
                 for (int i = 0; i < imageProfileList.size(); i++) {
 
                     final ListModel sched = new ListModel();
@@ -305,7 +306,7 @@ public class HomeActivity extends AppCompatActivity {
                 adapter = new CustomAdapter(CustomListView, CustomListViewValuesArr, res);
                 item_list.setAdapter(adapter);
 
-                show_navigation_btn(true);
+                show_navigation_btn(true); //pokazanie bavgation btn'a po załadowaniu listView
                 progressBar.setVisibility(View.INVISIBLE);
                 relativeLayout.setVisibility(View.VISIBLE);
                 loading.setVisibility(View.INVISIBLE);
@@ -327,6 +328,60 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    //załadowanie zdjęcia profilowego z bazy danych
+    public void load_img (){
+
+        OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
+                .connectTimeout(120, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS)
+                .writeTimeout(120, TimeUnit.SECONDS)
+                .build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(MY_URL)
+                .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        LoadImgApi loadImgApi = retrofit.create(LoadImgApi.class);
+
+        Call<String> call = loadImgApi.loadImg();
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(@NonNull Call<String> call, @NonNull Response<String> response) {
+                Log.d("good", "good");
+                Toast.makeText(getApplicationContext(), "załadowano img z bazy", Toast.LENGTH_LONG).show();
+
+                String encodedImage = response.body();
+                byte[] decodedString = Base64.decode(encodedImage, Base64.DEFAULT);
+                Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                View img_header = navigationView.getHeaderView(0);
+                ImageView header_img = img_header.findViewById(R.id.header_img);
+                header_img.setImageBitmap(decodedByte);
+                IMG = decodedByte;
+
+                progressBar.setVisibility(View.INVISIBLE);
+                relativeLayout.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.INVISIBLE);
+
+            }
+            @Override
+            public void onFailure(@NonNull Call<String> call, @NonNull Throwable t) {
+                Log.d("fail", "fail");
+                Toast.makeText(getApplicationContext(), "nie zaladowano img z bazy", Toast.LENGTH_LONG).show();
+
+                progressBar.setVisibility(View.INVISIBLE);
+                relativeLayout.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+    }
+
+    //wysyłanie uid uzytkownika do backendu
     public void profile_details(ProfileDetails profileDetails) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -352,5 +407,24 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
+    //inicjalizacja zmiennych
+    public void initialize (){
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+
+        cardView = findViewById(R.id.card_view);
+        progressBar = findViewById(R.id.home_progress_bar);
+        relativeLayout = findViewById(R.id.home_layout);
+        loading = findViewById(R.id.home_loading);
+        item_list = findViewById(R.id.home_list);
+
+        View nav_header_title = navigationView.getHeaderView(0);
+        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+        header_title.setText(R.string.app_name);
+
+        Menu nav_Menu = navigationView.getMenu();
+        nav_Menu.findItem(R.id.nav_login).setVisible(false);
+        nav_Menu.findItem(R.id.nav_registration).setVisible(false);
+    }
 
 }

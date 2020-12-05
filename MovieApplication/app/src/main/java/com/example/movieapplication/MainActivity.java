@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView logo, text;
     LottieAnimationView lottieAnimationView;
 
-    public static String MY_URL = "http://192.168.0.4:8000";
+    public static String MY_URL = "http://192.168.0.5:8000"; //adres ip na którym odpalony serwer
     public static Bitmap IMG = null;
 
     @Override
@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //załadowanie toolbara
         toolbar = findViewById(R.id.app_bar);
         toolbar.setTitle(R.string.app_name);
         setSupportActionBar(toolbar);
@@ -72,41 +73,12 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
+        //instancja FirebaseAuthentication
         firebaseAuth = FirebaseAuth.getInstance();
 
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.navigation_view);
+        initialize();
 
-        View nav_header_title = navigationView.getHeaderView(0);
-        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
-        header_title.setText(R.string.app_name);
-
-        progressBar = findViewById(R.id.main_progress_bar);
-        loading = findViewById(R.id.main_loading);
-        constraintLayout = findViewById(R.id.main_layout);
-
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        Menu nav_Menu = navigationView.getMenu();
-        if(firebaseUser != null) {
-            load_data();
-            nav_Menu.findItem(R.id.nav_login).setVisible(false);
-            nav_Menu.findItem(R.id.nav_registration).setVisible(false);
-        }
-        else{
-            progressBar.setVisibility(View.INVISIBLE);
-            constraintLayout.setVisibility(View.VISIBLE);
-            loading.setVisibility(View.INVISIBLE);
-            nav_Menu.findItem(R.id.nav_home).setVisible(false);
-            nav_Menu.findItem(R.id.nav_logout).setVisible(false);
-            nav_Menu.findItem(R.id.nav_profile).setVisible(false);
-            nav_Menu.findItem(R.id.nav_settings).setVisible(false);
-        }
-
-        logo = findViewById(R.id.logo);
-        text = findViewById(R.id.text);
-        lottieAnimationView = findViewById(R.id.lottie);
-        lottieAnimationView.setRepeatCount(LottieDrawable.INFINITE);
-
+        //obsługa navigationView
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -160,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //ładowanie danych z bazy danych
     public void load_data (){
         progressBar.setVisibility(View.VISIBLE);
         constraintLayout.setVisibility(View.INVISIBLE);
@@ -172,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         load_img();
     }
 
+    //załadowanie headera z bazy danych
     public void set_values (){
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -206,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //załadowanie bazy wyborów z bazy danych
     public void initialize_base() {
 
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
@@ -241,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    //wysyłanie uid uzytkownika do backendu
     public void profile_details(ProfileDetails profileDetails) {
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -266,6 +242,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //załadowanie zdjęcia profilowego z bazy danych
     public void load_img (){
 
         OkHttpClient okHttpClient = new OkHttpClient().newBuilder()
@@ -328,6 +305,43 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //inicjalizacja zmiennych
+    public void initialize () {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.navigation_view);
+
+        View nav_header_title = navigationView.getHeaderView(0);
+        TextView header_title = nav_header_title.findViewById(R.id.nav_header_title);
+        header_title.setText(R.string.app_name);
+
+        progressBar = findViewById(R.id.main_progress_bar);
+        loading = findViewById(R.id.main_loading);
+        constraintLayout = findViewById(R.id.main_layout);
+
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+
+        Menu nav_Menu = navigationView.getMenu();
+        if(firebaseUser != null) {
+            load_data();
+            nav_Menu.findItem(R.id.nav_login).setVisible(false);
+            nav_Menu.findItem(R.id.nav_registration).setVisible(false);
+        }
+        else{
+            progressBar.setVisibility(View.INVISIBLE);
+            constraintLayout.setVisibility(View.VISIBLE);
+            loading.setVisibility(View.INVISIBLE);
+            nav_Menu.findItem(R.id.nav_home).setVisible(false);
+            nav_Menu.findItem(R.id.nav_logout).setVisible(false);
+            nav_Menu.findItem(R.id.nav_profile).setVisible(false);
+            nav_Menu.findItem(R.id.nav_settings).setVisible(false);
+        }
+
+        logo = findViewById(R.id.logo);
+        text = findViewById(R.id.text);
+        lottieAnimationView = findViewById(R.id.lottie);
+        lottieAnimationView.setRepeatCount(LottieDrawable.INFINITE);
     }
 
 }
